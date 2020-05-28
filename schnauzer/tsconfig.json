@@ -12,5 +12,8 @@
       "experimentalDecorators": true,
       "sourceMap": true,
       "allowSyntheticDefaultImports": true
-   }
+   },
+   "include": [
+      "./src/**/*.ts"
+   ]
 }
