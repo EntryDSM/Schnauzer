@@ -10,11 +10,13 @@
     "@types/sinon": "^9.0.4",
     "chai": "^4.2.0",
     "mocha": "^7.2.0",
+    "prettier": "^2.0.5",
     "sinon": "^9.0.2",
     "ts-node": "3.3.0",
     "typescript": "3.3.3333"
   },
   "dependencies": {
+    "class-validator": "^0.12.2",
     "express": "^4.17.1",
     "mysql": "^2.14.1",
     "reflect-metadata": "^0.1.10",
@@ -22,7 +24,10 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "test": "mocha -r node_modules/ts-node/register test/**/*.ts",
+    "test": "mocha -r node_modules/ts-node/register src/test/**/*.ts",
     "build": "tsc"
+  },
+  "prettier": {
+    "tabWidth": 2
   }
 }
