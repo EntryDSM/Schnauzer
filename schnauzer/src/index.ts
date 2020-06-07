@@ -1,3 +1,9 @@
-import app from './app';
+import { createConnection } from "typeorm";
+import app from "./app";
+import { serverPort } from "./config";
 
-app.listen(3000);
+createConnection()
+  .then(() => {
+    app.listen(serverPort);
+  })
+  .catch((err) => console.error(err));

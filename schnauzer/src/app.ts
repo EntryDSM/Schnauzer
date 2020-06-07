@@ -1,7 +1,9 @@
-import express, { Application } from 'express'
+import "reflect-metadata";
+import * as express from "express";
+import { Application } from "express";
 
 class App {
-  private app: Application;
+  private readonly app: Application;
 
   constructor() {
     this.app = express();
@@ -12,6 +14,10 @@ class App {
 
   public listen(port: number) {
     this.app.listen(port);
+  }
+
+  get application() {
+    return this.app;
   }
 }
 
