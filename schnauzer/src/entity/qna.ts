@@ -13,7 +13,7 @@ export enum UserType {
 }
 
 @Entity()
-export class QnA extends ValidationEntity {
+export class Qna extends ValidationEntity {
   @PrimaryGeneratedColumn()
   qna_id: number;
 
