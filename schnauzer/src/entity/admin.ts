@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
 
 @Entity()
-export class User extends ValidationEntity {
+export class Admin extends ValidationEntity {
   @PrimaryColumn({ length: 100 })
   @IsEmail()
   email: string;

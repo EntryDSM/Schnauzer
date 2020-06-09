@@ -40,7 +40,7 @@ export class User extends ValidationEntity {
   @IsNotEmpty()
   password: string;
 
-  @Column()
+  @Column({ type: "int" })
   @IsNotEmpty()
   receipt_number: number;
 
@@ -53,8 +53,8 @@ export class User extends ValidationEntity {
   @Column({ type: "enum", enum: GradeType, nullable: true })
   grade_type: GradeType;
 
-  @Column({ type: "tinyint", nullable: true })
-  is_daejeon: number;
+  @Column({ width: 2, nullable: true })
+  is_daejeon: boolean;
 
   @Column({ length: 15, nullable: true })
   name: string;
