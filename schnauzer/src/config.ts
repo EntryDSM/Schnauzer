@@ -10,6 +10,7 @@ const {
   DB_NAME,
   CONNECTION_NAME,
   SERVER_PORT,
+  JWT_SECRET,
 } = process.env;
 
 export const dbOptions = {
@@ -22,3 +23,4 @@ export const dbOptions = {
 };
 
 export const serverPort = Number(SERVER_PORT);
+export const jwtSecret = JWT_SECRET;

@@ -7,6 +7,7 @@
     "@types/chai-http": "^4.2.0",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.6",
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/mocha": "^7.0.2",
     "@types/nock": "^11.1.0",
     "@types/node": "^8.0.29",
@@ -23,13 +24,14 @@
     "class-validator": "^0.12.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mysql": "^2.14.1",
     "reflect-metadata": "^0.1.10",
     "typeorm": "0.2.25"
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "test": "cross-env NODE_ENV=test mocha -r node_modules/ts-node/register src/test/**/*.ts",
+    "test": "cross-env NODE_ENV=test mocha -r node_modules/ts-node/register src/test/**/*.test.ts",
     "build": "tsc"
   },
   "prettier": {
