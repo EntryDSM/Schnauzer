@@ -18,12 +18,16 @@ chai.use(chaiHttp);
 let connection, validToken, invalidToken;
 
 before((done) => {
-  validToken = jwt.sign({ email: "user3@example.com" }, jwtSecret, {
-    expiresIn: "3m",
-  });
-  invalidToken = jwt.sign({ email: "user3@example.com" }, "invalid_secret", {
-    expiresIn: "3m",
-  });
+  validToken =
+    "Bearer " +
+    jwt.sign({ email: "user3@example.com" }, jwtSecret, {
+      expiresIn: "3m",
+    });
+  invalidToken =
+    "Bearer " +
+    jwt.sign({ email: "user3@example.com" }, "invalid_secret", {
+      expiresIn: "3m",
+    });
   createConnection(dbOptions.CONNECTION_NAME).then((c) => {
     connection = c;
     done();
