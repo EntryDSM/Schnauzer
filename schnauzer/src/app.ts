@@ -3,6 +3,7 @@ import * as express from "express";
 import { Application, NextFunction, Request, Response } from "express";
 import router from "./routes";
 import { HttpError } from "./error";
+import { errorHandler } from "./middleware/errorHandler";
 
 class App {
   private readonly app: Application;
@@ -18,14 +19,7 @@ class App {
       next(new HttpError("Not Found", 404));
     });
 
-    this.app.use(
-      (err: HttpError, req: Request, res: Response, next: NextFunction) => {
-        res.status(err.status || 500).json({
-          message: err.message,
-          status: err.status,
-        });
-      }
-    );
+    this.app.use(errorHandler);
   }
 
   public listen(port: number) {
