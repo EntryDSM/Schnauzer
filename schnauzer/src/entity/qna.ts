@@ -6,6 +6,8 @@ import {
 } from "typeorm";
 import { IsNotEmpty, IsEmail } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
+import { getConnection } from "typeorm";
+import { dbOptions } from "../config";
 
 export enum UserType {
   ADMIN = "admin",
@@ -41,4 +43,13 @@ export class Qna extends ValidationEntity {
   @Column()
   @CreateDateColumn()
   created_at: Date;
+
+  static findByUserEmailWithPage(email: string, page: number) {
+    return getConnection(dbOptions.CONNECTION_NAME)
+      .createQueryBuilder(Qna, "qna")
+      .where("qna.user_email = :email", { email })
+      .offset(page * 10)
+      .limit(10)
+      .getMany();
+  }
 }
