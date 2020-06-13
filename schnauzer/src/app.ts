@@ -13,7 +13,7 @@ class App {
 
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
-    this.app.use("/", router);
+    this.app.use("/schnauzer", router);
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       next(new HttpError("Not Found", 404));
