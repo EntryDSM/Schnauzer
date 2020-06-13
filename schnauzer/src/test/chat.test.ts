@@ -19,19 +19,24 @@ import { Admin } from "../entity/admin";
 
 chai.should();
 chai.use(chaiHttp);
-let connection, validToken, invalidToken;
+let connection, validToken, invalidSecretToken, adminEmailToken;
+
+function generateToken(type: string, secret: string, subject: string) {
+  return "Bearer " + jwt.sign({ type }, secret, { subject, expiresIn: "3m" });
+}
 
 before((done) => {
-  validToken =
-    "Bearer " +
-    jwt.sign({ email: "user3@example.com" }, jwtSecret, {
-      expiresIn: "3m",
-    });
-  invalidToken =
-    "Bearer " +
-    jwt.sign({ email: "user3@example.com" }, "invalid_secret", {
-      expiresIn: "3m",
-    });
+  validToken = generateToken("access_token", jwtSecret, "user3@example.com");
+  invalidSecretToken = generateToken(
+    "access_token",
+    "invalid secret",
+    "user3@example.com"
+  );
+  adminEmailToken = generateToken(
+    "access_token",
+    jwtSecret,
+    "admin1@example.com"
+  );
   createConnection(dbOptions.CONNECTION_NAME).then((c) => {
     connection = c;
     done();
@@ -98,9 +103,20 @@ describe("GET /chats", () => {
       chai
         .request(server.application)
         .get("/schnauzer/chats")
-        .set({ Authorization: invalidToken })
+        .set({ Authorization: invalidSecretToken })
         .end((err, res) => {
           res.should.have.status(401);
+          done();
+        });
+    });
+    it("should have status 400 with amdin email token", (done) => {
+      chai
+        .request(server.application)
+        .get("/schnauzer/chats")
+        .set({ Authorization: adminEmailToken })
+        .query({ page: 0 })
+        .end((err, res) => {
+          res.should.have.status(400);
           done();
         });
     });
