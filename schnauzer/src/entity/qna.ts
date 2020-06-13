@@ -48,6 +48,7 @@ export class Qna extends ValidationEntity {
     return getConnection(dbOptions.CONNECTION_NAME)
       .createQueryBuilder(Qna, "qna")
       .where("qna.user_email = :email", { email })
+      .orderBy("created_at", "DESC")
       .offset(page * 10)
       .limit(10)
       .getMany();

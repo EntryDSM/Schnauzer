@@ -76,9 +76,9 @@ export const chatExample = [
   },
 ];
 
-export const getChatsExpectedResult = chatExample.filter(
-  (v) => v.user_email === "user3@example.com"
-);
+export const getChatsExpectedResult = chatExample
+  .filter((v) => v.user_email === "user3@example.com")
+  .reverse();
 
 export const getLastChatsExpectedResult = [
   {
