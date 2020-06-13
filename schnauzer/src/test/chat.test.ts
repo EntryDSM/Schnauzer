@@ -9,9 +9,13 @@ import {
   getLastChatsExpectedResult,
   getChatsWithEmailExpectedResult,
 } from "./data/chat";
+import { users } from "./data/user";
+import { admins } from "./data/admin";
 import server from "../app";
 import { Qna } from "../entity/qna";
 import { dbOptions, jwtSecret } from "../config";
+import { User } from "../entity/user";
+import { Admin } from "../entity/admin";
 
 chai.should();
 chai.use(chaiHttp);
@@ -36,17 +40,28 @@ before((done) => {
 
 beforeEach((done) => {
   const qnaRepo = connection.getRepository(Qna);
-  let qnaSavePromises = [];
-  chatExample.forEach((chat) => {
-    const qna = qnaRepo.create(chat);
-    qnaSavePromises.push(qnaRepo.save(qna));
+  const userRepo = connection.getRepository(User);
+  const adminRepo = connection.getRepository(Admin);
+  let savePromises = [];
+  admins.forEach((admin) => {
+    savePromises.push(adminRepo.save(adminRepo.create(admin)));
   });
-  Promise.all(qnaSavePromises).then(() => done());
+  users.forEach((user) => {
+    savePromises.push(userRepo.save(userRepo.create(user)));
+  });
+  chatExample.forEach((chat) => {
+    savePromises.push(qnaRepo.save(qnaRepo.create(chat)));
+  });
+  Promise.all(savePromises).then(() => done());
 });
 
 afterEach((done) => {
   const qnaRepo: Repository<Qna> = connection.getRepository(Qna);
-  qnaRepo.clear().then(() => done());
+  const userRepo: Repository<User> = connection.getRepository(User);
+  const adminRepo: Repository<Admin> = connection.getRepository(Admin);
+  Promise.all([qnaRepo.clear(), userRepo.clear(), adminRepo.clear()]).then(() =>
+    done()
+  );
 });
 
 describe("GET /chats", () => {
@@ -56,10 +71,24 @@ describe("GET /chats", () => {
         .request(server.application)
         .get("/schnauzer/chats")
         .set({ Authorization: validToken })
+        .query({ page: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
           res.body.should.deep.equal(getChatsExpectedResult);
+          done();
+        });
+    });
+    it("should return empty array", (done) => {
+      chai
+        .request(server.application)
+        .get("/schnauzer/chats")
+        .set({ Authorization: validToken })
+        .query({ page: 1 })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a.instanceOf(Array);
+          res.body.should.deep.equal([]);
           done();
         });
     });
