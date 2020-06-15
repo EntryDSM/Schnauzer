@@ -40,7 +40,6 @@ export class ChatController {
       const chats = await Qna.findByUserEmailWithPage(userEmail, Number(page));
       res.status(200).json(chats);
     } catch (e) {
-      console.log(e);
       next(e);
     }
   };
