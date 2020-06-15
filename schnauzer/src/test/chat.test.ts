@@ -147,7 +147,8 @@ describe("GET /schnauzer/chats/:email", () => {
       chai
         .request(server.application)
         .get("/schnauzer/chats/user1@example.com")
-        .set({ Authorization: validToken })
+        .set({ Authorization: adminEmailToken })
+        .query({ page: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -156,5 +157,17 @@ describe("GET /schnauzer/chats/:email", () => {
         });
     });
   });
-  describe("fail", () => {});
+  describe("fail", () => {
+    it("should have status 400 with user token", (done) => {
+      chai
+        .request(server.application)
+        .get("/schnauzer/chats/user1@example.com")
+        .set({ Authorization: validToken })
+        .query({ page: 0 })
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        });
+    });
+  });
 });
