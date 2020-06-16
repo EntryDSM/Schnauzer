@@ -46,10 +46,12 @@ export class Qna extends ValidationEntity {
 
   static findByUserEmailWithPage(email: string, page: number, limit: number) {
     return getConnection(dbOptions.CONNECTION_NAME)
-      .createQueryBuilder(Qna, "qna")
+      .createQueryBuilder()
+      .select("qna")
+      .from(Qna, "qna")
       .where("qna.user_email = :email", { email })
       .orderBy("created_at", "DESC")
-      .offset(page * 10)
+      .offset(page * limit)
       .limit(limit)
       .getMany();
   }
