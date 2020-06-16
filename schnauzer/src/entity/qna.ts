@@ -44,13 +44,13 @@ export class Qna extends ValidationEntity {
   @CreateDateColumn()
   created_at: Date;
 
-  static findByUserEmailWithPage(email: string, page: number) {
+  static findByUserEmailWithPage(email: string, page: number, limit: number) {
     return getConnection(dbOptions.CONNECTION_NAME)
       .createQueryBuilder(Qna, "qna")
       .where("qna.user_email = :email", { email })
       .orderBy("created_at", "DESC")
       .offset(page * 10)
-      .limit(10)
+      .limit(limit)
       .getMany();
   }
 }

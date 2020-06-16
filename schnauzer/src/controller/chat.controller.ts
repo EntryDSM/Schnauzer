@@ -10,13 +10,18 @@ export class ChatController {
   static getChats = async (req: Request, res: Response, next: NextFunction) => {
     const userEmail = res.locals.jwtPayload.sub;
     const { page } = req.query;
+    const limit = 10;
     try {
       const connection = getConnection(dbOptions.CONNECTION_NAME);
       const userRepo = connection.getRepository(User);
       if (!(await userRepo.findOne({ email: userEmail }))) {
-        throw new HttpError("어드민 불허", 400);
+        throw new HttpError("알 수 없는 사용자", 400);
       }
-      const chats = await Qna.findByUserEmailWithPage(userEmail, Number(page));
+      const chats = await Qna.findByUserEmailWithPage(
+        userEmail,
+        Number(page),
+        limit
+      );
       res.status(200).json(chats);
     } catch (e) {
       next(e);
@@ -31,13 +36,18 @@ export class ChatController {
     const adminEmail = res.locals.jwtPayload.sub;
     const userEmail = req.params.email;
     const { page } = req.query;
+    const limit = 10;
     try {
       const connection = getConnection(dbOptions.CONNECTION_NAME);
       const adminRepo = connection.getRepository(Admin);
       if (!(await adminRepo.findOne({ email: adminEmail }))) {
-        throw new HttpError("일반 유저 불허", 400);
+        throw new HttpError("알 수 없는 사용자", 400);
       }
-      const chats = await Qna.findByUserEmailWithPage(userEmail, Number(page));
+      const chats = await Qna.findByUserEmailWithPage(
+        userEmail,
+        Number(page),
+        limit
+      );
       res.status(200).json(chats);
     } catch (e) {
       next(e);
