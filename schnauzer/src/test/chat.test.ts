@@ -129,7 +129,7 @@ describe("GET /last-chats", () => {
       chai
         .request(server.application)
         .get("/schnauzer/last-chats")
-        .set({ Authorization: validToken })
+        .set({ Authorization: adminEmailToken })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -138,7 +138,18 @@ describe("GET /last-chats", () => {
         });
     });
   });
-  describe("fail", () => {});
+  describe("fail", () => {
+    it("should have status 400 with user token", (done) => {
+      chai
+        .request(server.application)
+        .get("/schnauzer/last-chats")
+        .set({ Authorization: validToken })
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        });
+    });
+  });
 });
 
 describe("GET /schnauzer/chats/:email", () => {
