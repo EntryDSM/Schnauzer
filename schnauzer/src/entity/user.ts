@@ -36,7 +36,7 @@ export class User extends ValidationEntity {
   @IsEmail()
   email: string;
 
-  @Column({ length: 100 })
+  @Column({ length: 100, select: false })
   @IsNotEmpty()
   password: string;
 
@@ -44,54 +44,54 @@ export class User extends ValidationEntity {
   @IsNotEmpty()
   receipt_number: number;
 
-  @Column({ type: "enum", enum: ApplyType, nullable: true })
+  @Column({ type: "enum", enum: ApplyType, nullable: true, select: false })
   apply_type: ApplyType;
 
-  @Column({ type: "enum", enum: AdditionalType, nullable: true })
+  @Column({ type: "enum", enum: AdditionalType, nullable: true, select: false })
   additional_type: AdditionalType;
 
-  @Column({ type: "enum", enum: GradeType, nullable: true })
+  @Column({ type: "enum", enum: GradeType, nullable: true, select: false })
   grade_type: GradeType;
 
-  @Column({ width: 2, nullable: true })
+  @Column({ width: 2, nullable: true, select: false })
   is_daejeon: boolean;
 
   @Column({ length: 15, nullable: true })
   name: string;
 
-  @Column({ type: "enum", enum: Sex, nullable: true })
+  @Column({ type: "enum", enum: Sex, nullable: true, select: false })
   sex: Sex;
 
-  @Column({ type: "date", nullable: true })
+  @Column({ type: "date", nullable: true, select: false })
   birth_date: Date;
 
-  @Column({ length: 15, nullable: true })
+  @Column({ length: 15, nullable: true, select: false })
   parent_name: string;
 
-  @Column({ length: 20, nullable: true })
+  @Column({ length: 20, nullable: true, select: false })
   parent_tel: string;
 
-  @Column({ length: 20, nullable: true })
+  @Column({ length: 20, nullable: true, select: false })
   applicant_tel: string;
 
-  @Column({ length: 500, nullable: true })
+  @Column({ length: 500, nullable: true, select: false })
   address: string;
 
-  @Column({ length: 5, nullable: true })
+  @Column({ length: 5, nullable: true, select: false })
   post_code: string;
 
-  @Column({ length: 45, nullable: true })
+  @Column({ length: 45, nullable: true, select: false })
   user_photo: string;
 
-  @Column({ length: 45, nullable: true })
+  @Column({ length: 45, nullable: true, select: false })
   home_tel: string;
 
-  @Column({ length: 1600, nullable: true })
+  @Column({ length: 1600, nullable: true, select: false })
   self_introduction: string;
 
-  @Column({ length: 1600, nullable: true })
+  @Column({ length: 1600, nullable: true, select: false })
   study_plan: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   created_at: Date;
 }

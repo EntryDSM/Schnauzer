@@ -88,6 +88,11 @@ export const getLastChatsExpectedResult = [
     to: UserType.ADMIN,
     content: "감사합니다.",
     created_at: "2020-06-03T05:23:40.000Z",
+    user: {
+      email: "user3@example.com",
+      receipt_number: 12347,
+      name: "박예시",
+    },
   },
   {
     qna_id: 4,
@@ -96,6 +101,11 @@ export const getLastChatsExpectedResult = [
     to: UserType.ADMIN,
     content: "안녕하세요",
     created_at: "2020-06-03T05:16:40.000Z",
+    user: {
+      email: "user1@example.com",
+      receipt_number: 12345,
+      name: "김예시",
+    },
   },
   {
     qna_id: 2,
@@ -104,6 +114,11 @@ export const getLastChatsExpectedResult = [
     to: UserType.STUDENT,
     content: "반갑습니다",
     created_at: "2020-06-03T05:13:40.000Z",
+    user: {
+      email: "user2@example.com",
+      receipt_number: 12346,
+      name: "이예시",
+    },
   },
 ];
 

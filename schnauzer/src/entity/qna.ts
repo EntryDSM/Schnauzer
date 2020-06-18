@@ -8,6 +8,7 @@ import { IsNotEmpty, IsEmail } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
 import { getConnection } from "typeorm";
 import { dbOptions } from "../config";
+import { User } from "./user";
 
 export enum UserType {
   ADMIN = "admin",
@@ -53,6 +54,24 @@ export class Qna extends ValidationEntity {
       .orderBy("created_at", "DESC")
       .offset(page * limit)
       .limit(limit)
+      .getMany();
+  }
+
+  static findLastChatOfEachUser() {
+    return getConnection(dbOptions.CONNECTION_NAME)
+      .createQueryBuilder()
+      .select("qna")
+      .from(Qna, "qna")
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select("MAX(qna.qna_id)")
+          .from(Qna, "qna")
+          .groupBy("user_email")
+          .getQuery();
+        return "qna.qna_id IN " + subQuery;
+      })
+      .orderBy("qna_id", "DESC")
       .getMany();
   }
 }

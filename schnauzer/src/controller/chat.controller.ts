@@ -53,4 +53,33 @@ export class ChatController {
       next(e);
     }
   };
+
+  static getLastChats = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const adminEmail = res.locals.jwtPayload.sub;
+    try {
+      const connection = getConnection(dbOptions.CONNECTION_NAME);
+      const adminRepo = connection.getRepository(Admin);
+      const userRepo = connection.getRepository(User);
+      if (!(await adminRepo.findOne({ email: adminEmail }))) {
+        throw new HttpError("알 수 없는 사용자", 400);
+      }
+      let chats = await Qna.findLastChatOfEachUser();
+      const lastChats = await Promise.all(
+        chats.map(async (chat) => {
+          const user = await userRepo.findOne({ email: chat.user_email });
+          return {
+            ...chat,
+            user,
+          };
+        })
+      );
+      res.status(200).json(lastChats);
+    } catch (e) {
+      next(e);
+    }
+  };
 }
