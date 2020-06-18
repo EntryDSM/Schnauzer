@@ -68,14 +68,15 @@ export class ChatController {
         throw new HttpError("알 수 없는 사용자", 400);
       }
       let chats = await Qna.findLastChatOfEachUser();
-      const findUserPromises = chats.map(async (chat) => {
-        const user = await userRepo.findOne({ email: chat.user_email });
-        return {
-          ...chat,
-          user,
-        };
-      });
-      const lastChats = await Promise.all(findUserPromises);
+      const lastChats = await Promise.all(
+        chats.map(async (chat) => {
+          const user = await userRepo.findOne({ email: chat.user_email });
+          return {
+            ...chat,
+            user,
+          };
+        })
+      );
       res.status(200).json(lastChats);
     } catch (e) {
       next(e);
