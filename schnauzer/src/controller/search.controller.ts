@@ -13,14 +13,9 @@ export class SearchController {
     next: NextFunction
   ) => {
     const { name } = req.params;
-    const adminEmail = res.locals.jwtPayload.sub;
     try {
       const connection = getConnection(dbOptions.CONNECTION_NAME);
-      const adminRepo = connection.getRepository(Admin);
       const userRepo = connection.getRepository(User);
-      if (!(await adminRepo.findOne({ email: adminEmail }))) {
-        throw new HttpError("알 수 없는 사용자", 400);
-      }
       const searchResult = await Qna.findLastChatOfEachUserByName(name);
       const lastChats = await Promise.all(
         searchResult.map(async (chat) => {
