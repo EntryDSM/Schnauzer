@@ -8,6 +8,8 @@ import {
   getChatsExpectedResult,
   getLastChatsExpectedResult,
   getChatsWithEmailExpectedResult,
+  searchResult,
+  searchResult2,
 } from "./data/chat";
 import { users } from "./data/user";
 import { admins } from "./data/admin";
@@ -173,6 +175,60 @@ describe("GET /schnauzer/chats/:email", () => {
       chai
         .request(server.application)
         .get("/schnauzer/chats/user1@example.com")
+        .set({ Authorization: validToken })
+        .query({ page: 0 })
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        });
+    });
+  });
+});
+
+describe("GET /schnauzer/search/:name", () => {
+  describe("success", () => {
+    it("should return expected object", (done) => {
+      chai
+        .request(server.application)
+        .get(`/schnauzer/search/${encodeURI("예시")}`)
+        .set({ Authorization: adminEmailToken })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a.instanceOf(Array);
+          res.body.should.deep.equal(searchResult);
+          done();
+        });
+    });
+    it("should return expected object", (done) => {
+      chai
+        .request(server.application)
+        .get(`/schnauzer/search/${encodeURI("김예")}`)
+        .set({ Authorization: adminEmailToken })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a.instanceOf(Array);
+          res.body.should.deep.equal(searchResult2);
+          done();
+        });
+    });
+    it("should return empty array", (done) => {
+      chai
+        .request(server.application)
+        .get(`/schnauzer/search/${encodeURI("노바디")}`)
+        .set({ Authorization: adminEmailToken })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a.instanceOf(Array);
+          res.body.should.deep.equal([]);
+          done();
+        });
+    });
+  });
+  describe("fail", () => {
+    it("should have status 400 with user token", (done) => {
+      chai
+        .request(server.application)
+        .get(`/schnauzer/search/${encodeURI("예시")}`)
         .set({ Authorization: validToken })
         .query({ page: 0 })
         .end((err, res) => {

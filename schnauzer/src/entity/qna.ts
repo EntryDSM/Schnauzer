@@ -6,7 +6,7 @@ import {
 } from "typeorm";
 import { IsNotEmpty, IsEmail } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
-import { getConnection } from "typeorm";
+import { getConnection, Like } from "typeorm";
 import { dbOptions } from "../config";
 import { User } from "./user";
 
@@ -67,6 +67,35 @@ export class Qna extends ValidationEntity {
           .subQuery()
           .select("MAX(qna.qna_id)")
           .from(Qna, "qna")
+          .groupBy("user_email")
+          .getQuery();
+        return "qna.qna_id IN " + subQuery;
+      })
+      .orderBy("qna_id", "DESC")
+      .getMany();
+  }
+
+  static async findLastChatOfEachUserByName(name: string) {
+    const searchResult = await getConnection(dbOptions.CONNECTION_NAME)
+      .getRepository(User)
+      .find({ name: Like(`%${name}%`) });
+
+    if (!searchResult.length) {
+      return [];
+    }
+
+    return getConnection(dbOptions.CONNECTION_NAME)
+      .createQueryBuilder()
+      .select("qna")
+      .from(Qna, "qna")
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select("MAX(qna.qna_id)")
+          .from(Qna, "qna")
+          .where("qna.user_email IN (:...emails)", {
+            emails: searchResult.map((user) => user.email),
+          })
           .groupBy("user_email")
           .getQuery();
         return "qna.qna_id IN " + subQuery;

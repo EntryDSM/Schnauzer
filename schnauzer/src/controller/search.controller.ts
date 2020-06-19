@@ -1,0 +1,34 @@
+import { NextFunction, Request, Response } from "express";
+import { getConnection } from "typeorm";
+import { dbOptions } from "../config";
+import { Admin } from "../entity/admin";
+import { HttpError } from "../error";
+import { Qna } from "../entity/qna";
+import { User } from "../entity/user";
+
+export class SearchController {
+  static searchByName = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { name } = req.params;
+    try {
+      const connection = getConnection(dbOptions.CONNECTION_NAME);
+      const userRepo = connection.getRepository(User);
+      const searchResult = await Qna.findLastChatOfEachUserByName(name);
+      const lastChats = await Promise.all(
+        searchResult.map(async (chat) => {
+          const user = await userRepo.findOne({ email: chat.user_email });
+          return {
+            ...chat,
+            user,
+          };
+        })
+      );
+      res.status(200).json(lastChats);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
