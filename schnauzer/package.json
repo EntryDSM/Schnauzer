@@ -11,6 +11,8 @@
     "@types/mocha": "^7.0.2",
     "@types/nock": "^11.1.0",
     "@types/node": "^8.0.29",
+    "@types/socket.io": "^2.1.8",
+    "@types/socketio-jwt-auth": "0.0.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "cross-env": "^7.0.2",
@@ -27,6 +29,8 @@
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.14.1",
     "reflect-metadata": "^0.1.10",
+    "socket.io": "^2.3.0",
+    "socketio-jwt-auth": "^0.1.0",
     "typeorm": "0.2.25"
   },
   "scripts": {
