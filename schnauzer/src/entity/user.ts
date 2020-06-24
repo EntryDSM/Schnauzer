@@ -42,7 +42,7 @@ export class User extends ValidationEntity {
 
   @Column({ type: "int" })
   @IsNotEmpty()
-  receipt_number: number;
+  receipt_code: number;
 
   @Column({ type: "enum", enum: ApplyType, nullable: true, select: false })
   apply_type: ApplyType;

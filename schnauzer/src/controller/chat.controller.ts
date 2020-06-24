@@ -73,18 +73,19 @@ export class ChatController {
     const { content } = req.body;
     const userEmail = res.locals.jwtPayload.sub;
     try {
-      const qnaRepo = getConnection(dbOptions.CONNECTION_NAME).getRepository(
-        Qna
+      const connection = getConnection(dbOptions.CONNECTION_NAME);
+      const qnaRepo = connection.getRepository(Qna);
+      const storedChat = await qnaRepo.save(
+        qnaRepo.create({
+          user_email: userEmail,
+          admin_email: "broadcast@broadcast.com",
+          content,
+          to: UserType.ADMIN,
+        })
       );
-      const qna = Qna.create({
-        user_email: userEmail,
-        admin_email: "broadcast@broadcast",
-        content,
-        to: UserType.ADMIN,
-      });
-      await qnaRepo.save(qna);
-      res.status(200).json();
+      res.status(200).json(storedChat);
     } catch (e) {
+      console.log(e);
       next(e);
     }
   };
@@ -97,17 +98,17 @@ export class ChatController {
     const { content, userEmail } = req.body;
     const adminEmail = res.locals.jwtPayload.sub;
     try {
-      const qnaRepo = getConnection(dbOptions.CONNECTION_NAME).getRepository(
-        Qna
+      const connection = getConnection(dbOptions.CONNECTION_NAME);
+      const qnaRepo = connection.getRepository(Qna);
+      const storedChat = await qnaRepo.save(
+        qnaRepo.create({
+          user_email: userEmail,
+          admin_email: adminEmail,
+          content,
+          to: UserType.STUDENT,
+        })
       );
-      const qna = Qna.create({
-        user_email: userEmail,
-        admin_email: adminEmail,
-        content,
-        to: UserType.STUDENT,
-      });
-      await qnaRepo.save(qna);
-      res.status(200).json();
+      res.status(200).json(storedChat);
     } catch (e) {
       next(e);
     }
