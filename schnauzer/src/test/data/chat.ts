@@ -1,5 +1,4 @@
 import { UserType } from "../../entity/qna";
-import { User } from "../../entity/user";
 
 export const chatExample = [
   {
@@ -74,23 +73,82 @@ export const chatExample = [
     content: "감사합니다.",
     created_at: "2020-06-03T05:23:40.000Z",
   },
-];
-
-export const getChatsExpectedResult = chatExample
-  .filter((v) => v.user_email === "user3@example.com")
-  .reverse();
-
-export const getLastChatsExpectedResult = [
   {
-    qna_id: 9,
+    qna_id: 10,
     admin_email: "admin2@example.com",
     user_email: "user3@example.com",
     to: UserType.ADMIN,
     content: "감사합니다.",
-    created_at: "2020-06-03T05:23:40.000Z",
+    created_at: "2020-06-03T05:24:40.000Z",
+  },
+  {
+    qna_id: 11,
+    admin_email: "admin2@example.com",
+    user_email: "user3@example.com",
+    to: UserType.ADMIN,
+    content: "감사합니다.",
+    created_at: "2020-06-03T05:25:40.000Z",
+  },
+  {
+    qna_id: 12,
+    admin_email: "admin2@example.com",
+    user_email: "user3@example.com",
+    to: UserType.ADMIN,
+    content: "감사합니다.",
+    created_at: "2020-06-03T05:26:40.000Z",
+  },
+  {
+    qna_id: 13,
+    admin_email: "admin2@example.com",
+    user_email: "user3@example.com",
+    to: UserType.ADMIN,
+    content: "감사합니다.",
+    created_at: "2020-06-03T05:27:40.000Z",
+  },
+  {
+    qna_id: 14,
+    admin_email: "admin2@example.com",
+    user_email: "user3@example.com",
+    to: UserType.ADMIN,
+    content: "감사합니다.",
+    created_at: "2020-06-03T05:28:40.000Z",
+  },
+];
+
+export const getChatsExpectedResult = chatExample
+  .filter((v) => v.user_email === "user3@example.com")
+  .reverse()
+  .slice(0, 10)
+  .map((v) => {
+    return {
+      ...v,
+      is_read: 0,
+    };
+  });
+
+export const getChatsExpectedResult2 = chatExample
+  .filter((v) => v.user_email === "user3@example.com")
+  .reverse()
+  .slice(10, 11)
+  .map((v) => {
+    return {
+      ...v,
+      is_read: 0,
+    };
+  });
+
+export const getLastChatsExpectedResult = [
+  {
+    qna_id: 14,
+    admin_email: "admin2@example.com",
+    user_email: "user3@example.com",
+    to: UserType.ADMIN,
+    content: "감사합니다.",
+    is_read: 0,
+    created_at: "2020-06-03T05:28:40.000Z",
     user: {
       email: "user3@example.com",
-      receipt_number: 12347,
+      receipt_code: 12347,
       name: "박예시",
     },
   },
@@ -100,10 +158,11 @@ export const getLastChatsExpectedResult = [
     user_email: "user1@example.com",
     to: UserType.ADMIN,
     content: "안녕하세요",
+    is_read: 0,
     created_at: "2020-06-03T05:16:40.000Z",
     user: {
       email: "user1@example.com",
-      receipt_number: 12345,
+      receipt_code: 12345,
       name: "김예시",
     },
   },
@@ -113,10 +172,11 @@ export const getLastChatsExpectedResult = [
     user_email: "user2@example.com",
     to: UserType.STUDENT,
     content: "반갑습니다",
+    is_read: 0,
     created_at: "2020-06-03T05:13:40.000Z",
     user: {
       email: "user2@example.com",
-      receipt_number: 12346,
+      receipt_code: 12346,
       name: "이예시",
     },
   },
@@ -124,19 +184,26 @@ export const getLastChatsExpectedResult = [
 
 export const getChatsWithEmailExpectedResult = chatExample
   .filter((v) => v.user_email === "user1@example.com")
-  .reverse();
+  .reverse()
+  .map((v) => {
+    return {
+      ...v,
+      is_read: 0,
+    };
+  });
 
 export const searchResult = [
   {
-    qna_id: 9,
+    qna_id: 14,
     admin_email: "admin2@example.com",
     user_email: "user3@example.com",
     to: UserType.ADMIN,
     content: "감사합니다.",
-    created_at: "2020-06-03T05:23:40.000Z",
+    is_read: 0,
+    created_at: "2020-06-03T05:28:40.000Z",
     user: {
       email: "user3@example.com",
-      receipt_number: 12347,
+      receipt_code: 12347,
       name: "박예시",
     },
   },
@@ -146,10 +213,11 @@ export const searchResult = [
     user_email: "user1@example.com",
     to: UserType.ADMIN,
     content: "안녕하세요",
+    is_read: 0,
     created_at: "2020-06-03T05:16:40.000Z",
     user: {
       email: "user1@example.com",
-      receipt_number: 12345,
+      receipt_code: 12345,
       name: "김예시",
     },
   },
@@ -159,10 +227,11 @@ export const searchResult = [
     user_email: "user2@example.com",
     to: UserType.STUDENT,
     content: "반갑습니다",
+    is_read: 0,
     created_at: "2020-06-03T05:13:40.000Z",
     user: {
       email: "user2@example.com",
-      receipt_number: 12346,
+      receipt_code: 12346,
       name: "이예시",
     },
   },
@@ -175,11 +244,30 @@ export const searchResult2 = [
     user_email: "user1@example.com",
     to: UserType.ADMIN,
     content: "안녕하세요",
+    is_read: 0,
     created_at: "2020-06-03T05:16:40.000Z",
     user: {
       email: "user1@example.com",
-      receipt_number: 12345,
+      receipt_code: 12345,
       name: "김예시",
     },
   },
 ];
+
+export const postChatUserResult = {
+  admin_email: "broadcast@broadcast.com",
+  user_email: "user3@example.com",
+  to: "admin",
+  content: "ㅎㅇ",
+  qna_id: 15,
+  is_read: 0,
+};
+
+export const postChatAdminResult = {
+  admin_email: "admin1@example.com",
+  user_email: "user3@example.com",
+  to: "student",
+  content: "ㅎㅇ",
+  qna_id: 15,
+  is_read: 0,
+};
