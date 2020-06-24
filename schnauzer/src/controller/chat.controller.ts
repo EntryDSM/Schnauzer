@@ -76,11 +76,12 @@ export class ChatController {
       const qnaRepo = getConnection(dbOptions.CONNECTION_NAME).getRepository(
         Qna
       );
-      const qna = new Qna();
-      qna.user_email = userEmail;
-      qna.admin_email = "broadcast@broadcast";
-      qna.content = content;
-      qna.to = UserType.ADMIN;
+      const qna = Qna.create({
+        user_email: userEmail,
+        admin_email: "broadcast@broadcast",
+        content,
+        to: UserType.ADMIN,
+      });
       await qnaRepo.save(qna);
       res.status(200).json();
     } catch (e) {
@@ -99,11 +100,12 @@ export class ChatController {
       const qnaRepo = getConnection(dbOptions.CONNECTION_NAME).getRepository(
         Qna
       );
-      const qna = new Qna();
-      qna.user_email = userEmail;
-      qna.admin_email = adminEmail;
-      qna.content = content;
-      qna.to = UserType.STUDENT;
+      const qna = Qna.create({
+        user_email: userEmail,
+        admin_email: adminEmail,
+        content,
+        to: UserType.STUDENT,
+      });
       await qnaRepo.save(qna);
       res.status(200).json();
     } catch (e) {
