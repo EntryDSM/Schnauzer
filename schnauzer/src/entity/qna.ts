@@ -45,6 +45,10 @@ export class Qna extends ValidationEntity {
   @CreateDateColumn()
   created_at: Date;
 
+  @Column({ type: "tinyint", width: 2, default: 0 })
+  @IsNotEmpty()
+  is_read: boolean;
+
   static findByUserEmailWithPage(email: string, page: number, limit: number) {
     return getConnection(dbOptions.CONNECTION_NAME)
       .createQueryBuilder()
