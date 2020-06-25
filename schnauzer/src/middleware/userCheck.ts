@@ -15,7 +15,7 @@ export const isUser = async (
     const connection = getConnection(dbOptions.CONNECTION_NAME);
     const userRepo = connection.getRepository(User);
     if (!(await userRepo.findOne({ email: userEmail }))) {
-      throw new HttpError("알 수 없는 사용자", 400);
+      throw new HttpError("알 수 없는 사용자", 409);
     }
     next();
   } catch (e) {
@@ -33,7 +33,7 @@ export const isAdmin = async (
     const connection = getConnection(dbOptions.CONNECTION_NAME);
     const adminRepo = connection.getRepository(Admin);
     if (!(await adminRepo.findOne({ email: adminEmail }))) {
-      throw new HttpError("알 수 없는 사용자", 400);
+      throw new HttpError("알 수 없는 사용자", 409);
     }
     next();
   } catch (e) {
