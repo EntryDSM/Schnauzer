@@ -85,7 +85,6 @@ export class ChatController {
       );
       res.status(200).json(storedChat);
     } catch (e) {
-      console.log(e);
       next(e);
     }
   };
