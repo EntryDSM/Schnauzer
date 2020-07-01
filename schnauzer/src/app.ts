@@ -4,22 +4,42 @@ import { Application, NextFunction, Request, Response } from "express";
 import router from "./routes";
 import { HttpError } from "./error";
 import { errorHandler } from "./middleware/errorHandler";
+import * as SocketIO from "socket.io";
+import { Server as IO } from "socket.io";
+import socketInit from "./socket/index";
+import { Server, createServer } from "http";
 
 class App {
-  private readonly app: Application;
+  private app: Application;
+  private httpServer: Server;
+  private io: IO;
 
   constructor() {
-    this.app = express();
-
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: false }));
-    this.app.use("/qna", router);
+    this.createApp();
+    this.createServer();
+    this.socket();
+    this.app.use("/v5/qna", router);
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       next(new HttpError("Not Found", 404));
     });
 
     this.app.use(errorHandler);
+  }
+
+  private createApp(): void {
+    this.app = express();
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: false }));
+  }
+
+  private createServer(): void {
+    this.httpServer = createServer(this.app);
+  }
+
+  private socket() {
+    this.io = SocketIO.listen(this.httpServer);
+    socketInit(this.io);
   }
 
   public listen(port: number) {
