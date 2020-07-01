@@ -271,3 +271,11 @@ export const postChatAdminResult = {
   qna_id: 15,
   is_read: 0,
 };
+
+export const patchIsReadResult = chatExample.map((chat) => {
+  return {
+    ...chat,
+    created_at: new Date(chat.created_at),
+    is_read: chat.user_email === "user3@example.com" ? 1 : 0,
+  };
+});
