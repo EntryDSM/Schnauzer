@@ -2,9 +2,10 @@
    "compilerOptions": {
       "lib": [
          "es5",
-         "es6"
+         "es6",
+         "dom"
       ],
-      "target": "es5",
+      "target": "ES6",
       "module": "commonjs",
       "moduleResolution": "node",
       "outDir": "./build",
@@ -14,6 +15,8 @@
       "esModuleInterop": false
    },
    "include": [
-      "./src/**/*.ts"
-   ]
+      "src/**/*",
+      "ormconfig.js"
+   ],
+   "exclude": ["node_modules"]
 }
