@@ -8,7 +8,7 @@ export class Admin extends ValidationEntity {
   @IsEmail()
   email: string;
 
-  @Column({ length: 100 })
+  @Column({ length: 100, select: false })
   @IsNotEmpty()
   password: string;
 
