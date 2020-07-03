@@ -253,29 +253,3 @@ export const searchResult2 = [
     },
   },
 ];
-
-export const postChatUserResult = {
-  admin_email: "broadcast@broadcast.com",
-  user_email: "user3@example.com",
-  to: "admin",
-  content: "ㅎㅇ",
-  qna_id: 15,
-  is_read: 0,
-};
-
-export const postChatAdminResult = {
-  admin_email: "admin1@example.com",
-  user_email: "user3@example.com",
-  to: "student",
-  content: "ㅎㅇ",
-  qna_id: 15,
-  is_read: 0,
-};
-
-export const patchIsReadResult = chatExample.map((chat) => {
-  return {
-    ...chat,
-    created_at: new Date(chat.created_at),
-    is_read: chat.user_email === "user3@example.com" ? 1 : 0,
-  };
-});

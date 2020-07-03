@@ -2,12 +2,7 @@
 import * as chaiHttp from "chai-http";
 import * as chai from "chai";
 import * as jwt from "jsonwebtoken";
-import {
-  Connection,
-  createConnection,
-  getConnection,
-  Repository,
-} from "typeorm";
+import { Connection, createConnection, Repository } from "typeorm";
 import {
   chatExample,
   getChatsExpectedResult,
@@ -16,9 +11,6 @@ import {
   searchResult,
   searchResult2,
   getChatsExpectedResult2,
-  postChatAdminResult,
-  postChatUserResult,
-  patchIsReadResult,
 } from "./data/chat";
 import { users } from "./data/user";
 import { admins } from "./data/admin";
@@ -70,9 +62,7 @@ beforeEach((done) => {
     savePromises.push(qnaRepo.save(qnaRepo.create(chat)));
   });
   Promise.all(savePromises)
-    .then(() => {
-      done();
-    })
+    .then(() => done())
     .catch((err) => console.log(err));
 });
 
@@ -245,119 +235,6 @@ describe("GET /qna/search/:name", () => {
         .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: validToken })
         .query({ page: 0 })
-        .end((err, res) => {
-          res.should.have.status(409);
-          done();
-        });
-    });
-  });
-});
-
-describe("POST /qna/chat-user", () => {
-  describe("success", () => {
-    it("should return expected object", (done) => {
-      chai
-        .request(server.application)
-        .post("/v5/qna/chat-user")
-        .set({ Authorization: validToken })
-        .send({ content: "ㅎㅇ" })
-        .end((err, res) => {
-          delete res.body.created_at;
-          res.body.should.deep.equal(postChatUserResult);
-          res.should.have.status(200);
-          done();
-        });
-    });
-  });
-  describe("fail", () => {
-    it("should have status 409 with admin token", (done) => {
-      chai
-        .request(server.application)
-        .post("/v5/qna/chat-user")
-        .set({ Authorization: adminEmailToken })
-        .send({ content: "ㅎㅇ" })
-        .end((err, res) => {
-          res.should.have.status(409);
-          done();
-        });
-    });
-    it("should have status 400 with wrong parameter", (done) => {
-      chai
-        .request(server.application)
-        .post("/v5/qna/chat-user")
-        .set({ Authorization: validToken })
-        .send({ content: "" })
-        .end((err, res) => {
-          res.should.have.status(400);
-          done();
-        });
-    });
-  });
-});
-
-describe("POST /qna/chat-admin", () => {
-  describe("success", () => {
-    it("should return expected object", (done) => {
-      chai
-        .request(server.application)
-        .post("/v5/qna/chat-admin")
-        .set({ Authorization: adminEmailToken })
-        .send({ content: "ㅎㅇ", userEmail: "user3@example.com" })
-        .end((err, res) => {
-          delete res.body.created_at;
-          res.should.have.status(200);
-          res.body.should.deep.equal(postChatAdminResult);
-          done();
-        });
-    });
-  });
-  describe("fail", () => {
-    it("should have status 409 with user token", (done) => {
-      chai
-        .request(server.application)
-        .post("/v5/qna/chat-admin")
-        .set({ Authorization: validToken })
-        .send({ content: "ㅎㅇ", userEmail: "user3@example.com" })
-        .end((err, res) => {
-          res.should.have.status(409);
-          done();
-        });
-    });
-    it("should have status 400 with wrong parameter", (done) => {
-      chai
-        .request(server.application)
-        .post("/v5/qna/chat-admin")
-        .set({ Authorization: adminEmailToken })
-        .send({ content: "", userEmail: "user3@example.com" })
-        .end((err, res) => {
-          res.should.have.status(400);
-          done();
-        });
-    });
-  });
-});
-
-describe("PATCH /qna/read-check", () => {
-  describe("success", () => {
-    it("should change is_read to true", (done) => {
-      chai
-        .request(server.application)
-        .patch("/v5/qna/read-check")
-        .set({ Authorization: adminEmailToken })
-        .send({ userEmail: "user3@example.com" })
-        .end((err, res) => {
-          res.should.have.status(200);
-          done();
-        });
-    });
-  });
-  describe("fail", () => {
-    it("should have status 409 with user token", (done) => {
-      chai
-        .request(server.application)
-        .patch("/v5/qna/read-check")
-        .set({ Authorization: validToken })
-        .send({ userEmail: "user1@example.com" })
         .end((err, res) => {
           res.should.have.status(409);
           done();

@@ -15,8 +15,5 @@ router.get(
 );
 router.get("/last-chats", jwtCheck, isAdmin, ChatController.getLastChats);
 router.get("/search/:name", jwtCheck, isAdmin, SearchController.searchByName);
-router.post("/chat-user", jwtCheck, isUser, ChatController.postChatUser);
-router.post("/chat-admin", jwtCheck, isAdmin, ChatController.postChatAdmin);
-router.patch("/read-check", jwtCheck, isAdmin, ChatController.patchIsRead);
 
 export default router;

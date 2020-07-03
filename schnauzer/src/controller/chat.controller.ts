@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { getConnection } from "typeorm";
+import { getConnection } from "../entity/connection";
 import { Qna, UserType } from "../entity/qna";
 import { User } from "../entity/user";
-import { dbOptions } from "../config";
 
 export class ChatController {
   static getChats = async (req: Request, res: Response, next: NextFunction) => {
@@ -47,7 +46,7 @@ export class ChatController {
     next: NextFunction
   ) => {
     try {
-      const connection = getConnection(dbOptions.CONNECTION_NAME);
+      const connection = getConnection();
       const userRepo = connection.getRepository(User);
       let chats = await Qna.findLastChatOfEachUser();
       const lastChats = await Promise.all(
@@ -60,73 +59,6 @@ export class ChatController {
         })
       );
       res.status(200).json(lastChats);
-    } catch (e) {
-      next(e);
-    }
-  };
-
-  static postChatUser = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const { content } = req.body;
-    const userEmail = res.locals.jwtPayload.sub;
-    try {
-      const connection = getConnection(dbOptions.CONNECTION_NAME);
-      const qnaRepo = connection.getRepository(Qna);
-      const storedChat = await qnaRepo.save(
-        qnaRepo.create({
-          user_email: userEmail,
-          admin_email: "broadcast@broadcast.com",
-          content,
-          to: UserType.ADMIN,
-        })
-      );
-      res.status(200).json(storedChat);
-    } catch (e) {
-      next(e);
-    }
-  };
-
-  static postChatAdmin = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const { content, userEmail } = req.body;
-    const adminEmail = res.locals.jwtPayload.sub;
-    try {
-      const connection = getConnection(dbOptions.CONNECTION_NAME);
-      const qnaRepo = connection.getRepository(Qna);
-      const storedChat = await qnaRepo.save(
-        qnaRepo.create({
-          user_email: userEmail,
-          admin_email: adminEmail,
-          content,
-          to: UserType.STUDENT,
-        })
-      );
-      res.status(200).json(storedChat);
-    } catch (e) {
-      next(e);
-    }
-  };
-
-  static patchIsRead = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const { userEmail } = req.body;
-    try {
-      await getConnection(dbOptions.CONNECTION_NAME)
-        .createQueryBuilder()
-        .update(Qna)
-        .set({ is_read: true })
-        .where("user_email = :userEmail", { userEmail })
-        .execute();
-      res.status(200).json();
     } catch (e) {
       next(e);
     }
