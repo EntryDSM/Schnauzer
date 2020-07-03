@@ -9,7 +9,6 @@
     "@types/express": "^4.17.6",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mocha": "^7.0.2",
-    "@types/nock": "^11.1.0",
     "@types/node": "^8.0.29",
     "@types/socket.io": "^2.1.8",
     "@types/socket.io-client": "^1.4.33",
@@ -18,7 +17,6 @@
     "chai-http": "^4.3.0",
     "cross-env": "^7.0.2",
     "mocha": "^7.2.0",
-    "nock": "^12.0.3",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
     "socket.io-client": "^2.3.0",
@@ -37,10 +35,11 @@
     "typeorm": "0.2.25"
   },
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha -w -r node_modules/ts-node/register src/test/**/*.test.ts",
-    "dev": "cross-env NODE_ENV=test nodemon --exec 'ts-node' src/index.ts",
-    "start": "cross-env NODE_ENV=test ts-node src/index.ts",
-    "build": "tsc"
+    "test": "cross-env NODE_ENV=test mocha -r ts-node/register src/test/**/*.test.ts",
+    "dev": "cross-env NODE_ENV=test nodemon --exec ts-node src/index.ts",
+    "start": "npm run build && npm run execute",
+    "build": "tsc",
+    "execute": "node build/src"
   },
   "prettier": {
     "tabWidth": 2
