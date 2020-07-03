@@ -112,4 +112,23 @@ export class ChatController {
       next(e);
     }
   };
+
+  static patchIsRead = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { userEmail } = req.body;
+    try {
+      await getConnection(dbOptions.CONNECTION_NAME)
+        .createQueryBuilder()
+        .update(Qna)
+        .set({ is_read: true })
+        .where("user_email = :userEmail", { userEmail })
+        .execute();
+      res.status(200).json();
+    } catch (e) {
+      next(e);
+    }
+  };
 }

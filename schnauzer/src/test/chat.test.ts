@@ -18,6 +18,7 @@ import {
   getChatsExpectedResult2,
   postChatAdminResult,
   postChatUserResult,
+  patchIsReadResult,
 } from "./data/chat";
 import { users } from "./data/user";
 import { admins } from "./data/admin";
@@ -69,7 +70,9 @@ beforeEach((done) => {
     savePromises.push(qnaRepo.save(qnaRepo.create(chat)));
   });
   Promise.all(savePromises)
-    .then(() => done())
+    .then(() => {
+      done();
+    })
     .catch((err) => console.log(err));
 });
 
@@ -87,7 +90,7 @@ describe("GET /qna/chats", () => {
     it("should return expected object", (done) => {
       chai
         .request(server.application)
-        .get("/qna/chats")
+        .get("/v5/qna/chats")
         .set({ Authorization: validToken })
         .query({ page: 0 })
         .end((err, res) => {
@@ -100,7 +103,7 @@ describe("GET /qna/chats", () => {
     it("should return length-1 array", (done) => {
       chai
         .request(server.application)
-        .get("/qna/chats")
+        .get("/v5/qna/chats")
         .set({ Authorization: validToken })
         .query({ page: 1 })
         .end((err, res) => {
@@ -115,7 +118,7 @@ describe("GET /qna/chats", () => {
     it("should have status 401 with invalid token", (done) => {
       chai
         .request(server.application)
-        .get("/qna/chats")
+        .get("/v5/qna/chats")
         .set({ Authorization: invalidSecretToken })
         .end((err, res) => {
           res.should.have.status(401);
@@ -125,7 +128,7 @@ describe("GET /qna/chats", () => {
     it("should have status 409 with amdin email token", (done) => {
       chai
         .request(server.application)
-        .get("/qna/chats")
+        .get("/v5/qna/chats")
         .set({ Authorization: adminEmailToken })
         .query({ page: 0 })
         .end((err, res) => {
@@ -141,7 +144,7 @@ describe("GET /qna/last-chats", () => {
     it("should return expected object", (done) => {
       chai
         .request(server.application)
-        .get("/qna/last-chats")
+        .get("/v5/qna/last-chats")
         .set({ Authorization: adminEmailToken })
         .end((err, res) => {
           res.should.have.status(200);
@@ -155,7 +158,7 @@ describe("GET /qna/last-chats", () => {
     it("should have status 409 with user token", (done) => {
       chai
         .request(server.application)
-        .get("/qna/last-chats")
+        .get("/v5/qna/last-chats")
         .set({ Authorization: validToken })
         .end((err, res) => {
           res.should.have.status(409);
@@ -170,7 +173,7 @@ describe("GET /qna/chats/:email", () => {
     it("should return expected object", (done) => {
       chai
         .request(server.application)
-        .get("/qna/chats/user1@example.com")
+        .get("/v5/qna/chats/user1@example.com")
         .set({ Authorization: adminEmailToken })
         .query({ page: 0 })
         .end((err, res) => {
@@ -185,7 +188,7 @@ describe("GET /qna/chats/:email", () => {
     it("should have status 409 with user token", (done) => {
       chai
         .request(server.application)
-        .get("/qna/chats/user1@example.com")
+        .get("/v5/qna/chats/user1@example.com")
         .set({ Authorization: validToken })
         .query({ page: 0 })
         .end((err, res) => {
@@ -201,7 +204,7 @@ describe("GET /qna/search/:name", () => {
     it("should return expected object", (done) => {
       chai
         .request(server.application)
-        .get(`/qna/search/${encodeURI("예시")}`)
+        .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: adminEmailToken })
         .end((err, res) => {
           res.should.have.status(200);
@@ -213,7 +216,7 @@ describe("GET /qna/search/:name", () => {
     it("should return expected object", (done) => {
       chai
         .request(server.application)
-        .get(`/qna/search/${encodeURI("김예")}`)
+        .get(`/v5/qna/search/${encodeURI("김예")}`)
         .set({ Authorization: adminEmailToken })
         .end((err, res) => {
           res.should.have.status(200);
@@ -225,7 +228,7 @@ describe("GET /qna/search/:name", () => {
     it("should return empty array", (done) => {
       chai
         .request(server.application)
-        .get(`/qna/search/${encodeURI("노바디")}`)
+        .get(`/v5/qna/search/${encodeURI("노바디")}`)
         .set({ Authorization: adminEmailToken })
         .end((err, res) => {
           res.should.have.status(200);
@@ -239,7 +242,7 @@ describe("GET /qna/search/:name", () => {
     it("should have status 409 with user token", (done) => {
       chai
         .request(server.application)
-        .get(`/qna/search/${encodeURI("예시")}`)
+        .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: validToken })
         .query({ page: 0 })
         .end((err, res) => {
@@ -255,7 +258,7 @@ describe("POST /qna/chat-user", () => {
     it("should return expected object", (done) => {
       chai
         .request(server.application)
-        .post("/qna/chat-user")
+        .post("/v5/qna/chat-user")
         .set({ Authorization: validToken })
         .send({ content: "ㅎㅇ" })
         .end((err, res) => {
@@ -270,7 +273,7 @@ describe("POST /qna/chat-user", () => {
     it("should have status 409 with admin token", (done) => {
       chai
         .request(server.application)
-        .post("/qna/chat-user")
+        .post("/v5/qna/chat-user")
         .set({ Authorization: adminEmailToken })
         .send({ content: "ㅎㅇ" })
         .end((err, res) => {
@@ -281,7 +284,7 @@ describe("POST /qna/chat-user", () => {
     it("should have status 400 with wrong parameter", (done) => {
       chai
         .request(server.application)
-        .post("/qna/chat-user")
+        .post("/v5/qna/chat-user")
         .set({ Authorization: validToken })
         .send({ content: "" })
         .end((err, res) => {
@@ -297,7 +300,7 @@ describe("POST /qna/chat-admin", () => {
     it("should return expected object", (done) => {
       chai
         .request(server.application)
-        .post("/qna/chat-admin")
+        .post("/v5/qna/chat-admin")
         .set({ Authorization: adminEmailToken })
         .send({ content: "ㅎㅇ", userEmail: "user3@example.com" })
         .end((err, res) => {
@@ -312,7 +315,7 @@ describe("POST /qna/chat-admin", () => {
     it("should have status 409 with user token", (done) => {
       chai
         .request(server.application)
-        .post("/qna/chat-admin")
+        .post("/v5/qna/chat-admin")
         .set({ Authorization: validToken })
         .send({ content: "ㅎㅇ", userEmail: "user3@example.com" })
         .end((err, res) => {
@@ -323,11 +326,40 @@ describe("POST /qna/chat-admin", () => {
     it("should have status 400 with wrong parameter", (done) => {
       chai
         .request(server.application)
-        .post("/qna/chat-admin")
+        .post("/v5/qna/chat-admin")
         .set({ Authorization: adminEmailToken })
         .send({ content: "", userEmail: "user3@example.com" })
         .end((err, res) => {
           res.should.have.status(400);
+          done();
+        });
+    });
+  });
+});
+
+describe("PATCH /qna/read-check", () => {
+  describe("success", () => {
+    it("should change is_read to true", (done) => {
+      chai
+        .request(server.application)
+        .patch("/v5/qna/read-check")
+        .set({ Authorization: adminEmailToken })
+        .send({ userEmail: "user3@example.com" })
+        .end((err, res) => {
+          res.should.have.status(200);
+          done();
+        });
+    });
+  });
+  describe("fail", () => {
+    it("should have status 409 with user token", (done) => {
+      chai
+        .request(server.application)
+        .patch("/v5/qna/read-check")
+        .set({ Authorization: validToken })
+        .send({ userEmail: "user1@example.com" })
+        .end((err, res) => {
+          res.should.have.status(409);
           done();
         });
     });
