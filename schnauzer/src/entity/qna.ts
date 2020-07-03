@@ -6,7 +6,8 @@ import {
 } from "typeorm";
 import { IsNotEmpty, IsEmail } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
-import { getConnection, Like } from "typeorm";
+import { Like } from "typeorm";
+import { getConnection } from "./connection";
 import { dbOptions } from "../config";
 import { User } from "./user";
 
@@ -54,7 +55,7 @@ export class Qna extends ValidationEntity {
   is_read: boolean;
 
   static findByUserEmailWithPage(email: string, page: number, limit: number) {
-    return getConnection(dbOptions.CONNECTION_NAME)
+    return getConnection()
       .createQueryBuilder()
       .select("qna")
       .from(Qna, "qna")
@@ -66,7 +67,7 @@ export class Qna extends ValidationEntity {
   }
 
   static findLastChatOfEachUser() {
-    return getConnection(dbOptions.CONNECTION_NAME)
+    return getConnection()
       .createQueryBuilder()
       .select("qna")
       .from(Qna, "qna")
@@ -84,7 +85,7 @@ export class Qna extends ValidationEntity {
   }
 
   static async findLastChatOfEachUserByName(name: string) {
-    const searchResult = await getConnection(dbOptions.CONNECTION_NAME)
+    const searchResult = await getConnection()
       .getRepository(User)
       .find({ name: Like(`%${name}%`) });
 
@@ -92,7 +93,7 @@ export class Qna extends ValidationEntity {
       return [];
     }
 
-    return getConnection(dbOptions.CONNECTION_NAME)
+    return getConnection()
       .createQueryBuilder()
       .select("qna")
       .from(Qna, "qna")
@@ -110,5 +111,24 @@ export class Qna extends ValidationEntity {
       })
       .orderBy("qna_id", "DESC")
       .getMany();
+  }
+
+  static async updateIsReadByUserEmail(userEmail: string) {
+    return getConnection()
+      .createQueryBuilder()
+      .update(Qna)
+      .set({ is_read: true })
+      .where("user_email = :userEmail", { userEmail })
+      .execute();
+  }
+
+  static async createNewQna(qna: {
+    user_email: string;
+    admin_email: string;
+    content: string;
+    to: UserType;
+  }) {
+    const qnaRepo = getConnection().getRepository(Qna);
+    return qnaRepo.save(qnaRepo.create(qna));
   }
 }

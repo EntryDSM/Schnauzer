@@ -1,7 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { UserType } from "../entity/qna";
-import { User } from "../entity/user";
-import { Qna } from "../entity/qna";
+import { Qna, UserType } from "../entity/qna";
 import { Sockets } from "./entity/sockets";
 import { Event } from "./entity/events";
 
@@ -13,20 +11,34 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
 
     socket.on(
       Event.NEW_MESSAGE,
-      (message: { userEmail: string; content: string }) => {
-        const { userEmail, content } = message;
-        const reply = {
-          adminEmail: socket.request.user.email,
-          userEmail,
-          content,
-          to: UserType.STUDENT,
-        };
-        io.to(message.userEmail).emit(Event.RECEIVE_MESSAGE, reply);
+      async ({
+        userEmail,
+        content,
+      }: {
+        userEmail: string;
+        content: string;
+      }) => {
+        try {
+          const storedChat = await Qna.createNewQna({
+            user_email: userEmail,
+            content,
+            admin_email: socket.request.user.email,
+            to: UserType.STUDENT,
+          });
+          io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
+        } catch (e) {
+          socket.emit(Event.SAVE_ERROR, e);
+        }
       }
     );
 
-    socket.on(Event.READ_CHECK, (userEmail: string) => {
-      io.to(userEmail).emit(Event.RECEIVE_READ_CHECK, userEmail);
+    socket.on(Event.READ_CHECK, async (userEmail: string) => {
+      try {
+        await Qna.updateIsReadByUserEmail(userEmail);
+        io.to(userEmail).emit(Event.RECEIVE_READ_CHECK, userEmail);
+      } catch (e) {
+        socket.emit(Event.SAVE_ERROR, e);
+      }
     });
 
     socket.on("disconnect", () => {
@@ -35,15 +47,19 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
   } else if (type === UserType.STUDENT) {
     sockets.addUser(socket);
 
-    socket.on(Event.NEW_MESSAGE, (message: { content: string }) => {
-      const userEmail = socket.request.user.email;
-      const reply = {
-        adminEmail: "broadcast@broadcast.com",
-        userEmail,
-        content: message.content,
-        to: UserType.ADMIN,
-      };
-      io.to(userEmail).emit(Event.RECEIVE_MESSAGE, reply);
+    socket.on(Event.NEW_MESSAGE, async ({ content }: { content: string }) => {
+      try {
+        const userEmail = socket.request.user.email;
+        const storedChat = await Qna.createNewQna({
+          user_email: userEmail,
+          content,
+          admin_email: "broadcast@broadcast.com",
+          to: UserType.ADMIN,
+        });
+        io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
+      } catch (e) {
+        socket.emit(Event.SAVE_ERROR, e);
+      }
     });
 
     socket.on("disconnect", () => {

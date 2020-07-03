@@ -3,4 +3,5 @@ export enum Event {
   RECEIVE_MESSAGE = "receive message",
   READ_CHECK = "read check",
   RECEIVE_READ_CHECK = "receive read check",
+  SAVE_ERROR = "save error",
 }
