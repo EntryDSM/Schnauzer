@@ -23,14 +23,14 @@ export class Sockets {
     }
   }
 
-  public deleteAdminAndLeaveRooms(adminSocket: Socket): void {
+  public adminLeaveRooms(adminSocket: Socket): void {
     adminSocket.leaveAll();
     this.adminSockets = this.adminSockets.filter(
       (checkSocket) => checkSocket !== adminSocket
     );
   }
 
-  public deleteUserAndLeaveRooms(userSocket: Socket): void {
+  public userLeaveRooms(userSocket: Socket): void {
     userSocket.leaveAll();
     this.userSockets = this.userSockets.filter(
       (checkSocket) => checkSocket !== userSocket
