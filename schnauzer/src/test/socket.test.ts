@@ -45,9 +45,6 @@ describe("basic socket.io example", function () {
   describe("user", () => {
     before((done) => {
       userSocket = connectSocketClient(userToken, httpServerAddr);
-      userSocket.on("connect", () => {
-        console.log("connect");
-      });
       done();
     });
 
@@ -60,12 +57,15 @@ describe("basic socket.io example", function () {
         content: "안녕",
       });
       userSocket.on(Event.RECEIVE_MESSAGE, (message) => {
+        delete message.created_at;
         message.should.be.an.instanceOf(Object);
         message.should.deep.equal({
-          adminEmail: "broadcast@broadcast.com",
-          userEmail: "user3@example.com",
+          qna_id: 15,
+          admin_email: "broadcast@broadcast.com",
+          user_email: "user3@example.com",
           content: "안녕",
           to: "admin",
+          is_read: 0,
         });
         done();
       });
@@ -77,42 +77,51 @@ describe("basic socket.io example", function () {
       userSocket = connectSocketClient(userToken, httpServerAddr);
       otherAdminSocket = connectSocketClient(otherAdminToken, httpServerAddr);
 
-      userSocket.on("connect", () => {
-        console.log("connect");
-      });
-      adminSocket.on("connect", () => {
-        console.log("connect");
-      });
-      otherAdminSocket.on("connect", () => {
-        console.log("connect");
-      });
       done();
     });
 
     afterEach((done) => {
       done();
     });
-
-    it("should communicate", (done) => {
-      adminSocket.emit(Event.NEW_MESSAGE, {
-        content: "Hello",
-        userEmail: "user3@example.com",
-      });
-      adminSocket.on(Event.RECEIVE_MESSAGE, (message) => {
-        message.should.deep.equal({
-          adminEmail: "admin1@example.com",
-          userEmail: "user3@example.com",
+    describe("success", () => {
+      it("should communicate", (done) => {
+        adminSocket.emit(Event.NEW_MESSAGE, {
           content: "Hello",
-          to: "student",
+          userEmail: "user3@example.com",
         });
-        done();
+        adminSocket.on(Event.RECEIVE_MESSAGE, (message) => {
+          delete message.created_at;
+          message.should.deep.equal({
+            qna_id: 15,
+            admin_email: "admin1@example.com",
+            user_email: "user3@example.com",
+            content: "Hello",
+            to: "student",
+            is_read: 0,
+          });
+          done();
+        });
+      });
+      it("should update is_read column", (done) => {
+        adminSocket.emit(Event.READ_CHECK, "user3@example.com");
+        otherAdminSocket.on(Event.RECEIVE_READ_CHECK, (userEmail: string) => {
+          done();
+        });
       });
     });
-    it("should update is_read column", (done) => {
-      adminSocket.emit(Event.READ_CHECK, "user3@example.com");
-      otherAdminSocket.on(Event.RECEIVE_READ_CHECK, (userEmail: string) => {
-        console.log("response");
-        done();
+    describe("fail", () => {
+      it("should return save error", (done) => {
+        userSocket.emit(Event.NEW_MESSAGE, { content: "" });
+        userSocket.on(Event.SAVE_ERROR, (err) => {
+          done();
+        });
+      });
+      it("should return auth error", (done) => {
+        const newSocket = connectSocketClient("fjweof", httpServerAddr);
+        newSocket.on("error", (err) => {
+          newSocket.disconnect();
+          done();
+        });
       });
     });
   });
