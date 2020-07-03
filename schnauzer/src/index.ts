@@ -1,8 +1,8 @@
 import { createConnection } from "typeorm";
 import app from "./app";
-import { serverPort } from "./config";
+import { dbOptions, serverPort } from "./config";
 
-createConnection()
+createConnection(dbOptions.CONNECTION_NAME)
   .then(() => {
     app.listen(serverPort);
   })
