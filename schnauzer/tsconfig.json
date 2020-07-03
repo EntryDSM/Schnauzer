@@ -12,11 +12,12 @@
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true,
-      "esModuleInterop": false
+      "esModuleInterop": false,
+      "rootDir": "."
    },
    "include": [
       "src/**/*",
-      "ormconfig.js"
+      "ormconfig.ts"
    ],
-   "exclude": ["node_modules"]
+   "exclude": ["node_modules", "src/test"]
 }
