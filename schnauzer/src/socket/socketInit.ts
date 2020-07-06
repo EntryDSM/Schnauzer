@@ -42,7 +42,7 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
     });
 
     socket.on("disconnect", () => {
-      sockets.deleteAdminAndLeaveRooms(socket);
+      sockets.adminLeaveRooms(socket);
     });
   } else if (type === UserType.STUDENT) {
     sockets.addUser(socket);
@@ -63,7 +63,7 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
     });
 
     socket.on("disconnect", () => {
-      sockets.deleteUserAndLeaveRooms(socket);
+      sockets.userLeaveRooms(socket);
     });
   }
 };
