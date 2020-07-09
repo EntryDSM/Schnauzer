@@ -10,6 +10,6 @@ export const errorHandler: ErrorRequestHandler = (
   res.status(err.status || 500).json({
     message: err.message || "internal server error",
     status: err.status || 500,
-    code: err.code || "s00",
+    code: err.code || "c03",
   });
 };
