@@ -25,12 +25,14 @@ before((done) => {
   adminToken = generateToken("admin1@example.com");
   otherAdminToken = generateToken("admin2@example.com");
 
-  httpServer = http.createServer().listen(() => {
-    httpServerAddr = httpServer.address();
-    ioServer = ioBack(httpServer);
-    socketInit(ioServer);
-    done();
-  });
+  httpServer = http.createServer().listen();
+  httpServerAddr = httpServer.address();
+  console.log("after createServer");
+  ioServer = ioBack(httpServer);
+  console.log("after ioBack");
+  socketInit(ioServer);
+  console.log("after socketInit");
+  done();
 });
 
 after((done) => {
