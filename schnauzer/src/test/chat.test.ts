@@ -16,10 +16,9 @@ import { users } from "./data/user";
 import { admins } from "./data/admin";
 import server from "../app";
 import { Qna } from "../entity/qna";
-import { dbOptions, jwtSecret } from "../config";
+import { dbOptions, jwtSecret } from "../global/config";
 import { User } from "../entity/user";
 import { Admin } from "../entity/admin";
-import { createDeflateRaw } from "zlib";
 
 chai.should();
 chai.use(chaiHttp);
@@ -136,6 +135,7 @@ describe("GET /qna/last-chats", () => {
         .request(server.application)
         .get("/v5/qna/last-chats")
         .set({ Authorization: adminEmailToken })
+        .query({ page: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -150,6 +150,7 @@ describe("GET /qna/last-chats", () => {
         .request(server.application)
         .get("/v5/qna/last-chats")
         .set({ Authorization: validToken })
+        .query({ page: 0 })
         .end((err, res) => {
           res.should.have.status(409);
           done();
@@ -196,6 +197,7 @@ describe("GET /qna/search/:name", () => {
         .request(server.application)
         .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: adminEmailToken })
+        .query({ page: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -208,6 +210,7 @@ describe("GET /qna/search/:name", () => {
         .request(server.application)
         .get(`/v5/qna/search/${encodeURI("김예")}`)
         .set({ Authorization: adminEmailToken })
+        .query({ page: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -220,6 +223,7 @@ describe("GET /qna/search/:name", () => {
         .request(server.application)
         .get(`/v5/qna/search/${encodeURI("노바디")}`)
         .set({ Authorization: adminEmailToken })
+        .query({ page: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);

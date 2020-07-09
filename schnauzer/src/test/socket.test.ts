@@ -6,7 +6,7 @@ import Socket = SocketIOClient.Socket;
 import { Server } from "http";
 import IoServer = SocketIO.Server;
 import { authenticate } from "socketio-jwt-auth";
-import { jwtSecret } from "../config";
+import { jwtSecret } from "../global/config";
 import { verifyFunc } from "../socket/verify";
 import { sign } from "jsonwebtoken";
 import socketInit from "../socket/index";
@@ -80,9 +80,6 @@ describe("basic socket.io example", function () {
       done();
     });
 
-    afterEach((done) => {
-      done();
-    });
     describe("success", () => {
       it("should communicate", (done) => {
         adminSocket.emit(Event.NEW_MESSAGE, {
@@ -118,6 +115,19 @@ describe("basic socket.io example", function () {
       });
       it("should return auth error", (done) => {
         const newSocket = connectSocketClient("fjweof", httpServerAddr);
+        newSocket.on("error", (err) => {
+          newSocket.disconnect();
+          done();
+        });
+      });
+      it("should return error with refresh token", (done) => {
+        const newSocket = connectSocketClient(
+          sign({ type: "refresh_token" }, jwtSecret, {
+            expiresIn: "3m",
+            subject: "user3@example.com",
+          }),
+          httpServerAddr
+        );
         newSocket.on("error", (err) => {
           newSocket.disconnect();
           done();
