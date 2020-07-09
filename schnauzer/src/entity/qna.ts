@@ -8,7 +8,7 @@ import { IsNotEmpty, IsEmail } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
 import { Like } from "typeorm";
 import { getConnection } from "./connection";
-import { dbOptions } from "../config";
+import { dbOptions } from "../global/config";
 import { User } from "./user";
 
 export enum UserType {
@@ -66,7 +66,7 @@ export class Qna extends ValidationEntity {
       .getMany();
   }
 
-  static findLastChatOfEachUser() {
+  static findLastChatOfEachUser(page: number, limit: number) {
     return getConnection()
       .createQueryBuilder()
       .select("qna")
@@ -80,11 +80,17 @@ export class Qna extends ValidationEntity {
           .getQuery();
         return "qna.qna_id IN " + subQuery;
       })
+      .limit(limit)
+      .offset(page * limit)
       .orderBy("qna_id", "DESC")
       .getMany();
   }
 
-  static async findLastChatOfEachUserByName(name: string) {
+  static async findLastChatOfEachUserByName(
+    name: string,
+    page: number,
+    limit: number
+  ) {
     const searchResult = await getConnection()
       .getRepository(User)
       .find({ name: Like(`%${name}%`) });
@@ -109,6 +115,8 @@ export class Qna extends ValidationEntity {
           .getQuery();
         return "qna.qna_id IN " + subQuery;
       })
+      .limit(limit)
+      .offset(limit * page)
       .orderBy("qna_id", "DESC")
       .getMany();
   }

@@ -1,8 +1,8 @@
 import { ErrorRequestHandler } from "express";
-import { HttpError } from "../error";
+import { Error } from "../global/error/error";
 
 export const errorHandler: ErrorRequestHandler = (
-  err: HttpError,
+  err: Error,
   req,
   res,
   next
@@ -10,5 +10,6 @@ export const errorHandler: ErrorRequestHandler = (
   res.status(err.status || 500).json({
     message: err.message || "internal server error",
     status: err.status || 500,
+    code: err.code || "s00",
   });
 };

@@ -45,10 +45,11 @@ export class ChatController {
     res: Response,
     next: NextFunction
   ) => {
+    const { page } = req.query;
     try {
       const connection = getConnection();
       const userRepo = connection.getRepository(User);
-      let chats = await Qna.findLastChatOfEachUser();
+      let chats = await Qna.findLastChatOfEachUser(Number(page), 15);
       const lastChats = await Promise.all(
         chats.map(async (chat) => {
           const user = await userRepo.findOne({ email: chat.user_email });

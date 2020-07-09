@@ -7,8 +7,8 @@ import { Server, createServer } from "http";
 import * as cors from "cors";
 import socketInit from "./socket/index";
 import router from "./routes";
-import { HttpError } from "./error";
 import { errorHandler } from "./middleware/errorHandler";
+import { ApiNotFoundError } from "./global/error/errorCode";
 
 class App {
   private app: Application;
@@ -22,7 +22,7 @@ class App {
     this.app.use("/v5/qna", router);
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      next(new HttpError("Not Found", 404));
+      next(ApiNotFoundError);
     });
 
     this.app.use(errorHandler);

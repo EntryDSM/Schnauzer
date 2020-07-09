@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { authenticate } from "socketio-jwt-auth";
-import { jwtSecret } from "../config";
+import { jwtSecret } from "../global/config";
 import { verifyFunc } from "./verify";
 import { socketInit } from "./socketInit";
 

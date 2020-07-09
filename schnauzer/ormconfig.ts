@@ -1,5 +1,5 @@
 import { ConnectionOptions } from "typeorm";
-import { dbOptions } from "./src/config";
+import { dbOptions } from "./src/global/config";
 
 const option: ConnectionOptions = {
   type: "mysql",
