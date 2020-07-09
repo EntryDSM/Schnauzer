@@ -1,8 +1,8 @@
 import { ErrorRequestHandler } from "express";
-import { Error } from "../global/error/error";
+import { ErrorResponse } from "../global/error/error";
 
 export const errorHandler: ErrorRequestHandler = (
-  err: Error,
+  err: ErrorResponse,
   req,
   res,
   next

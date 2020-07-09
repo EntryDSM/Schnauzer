@@ -1,11 +1,19 @@
 import { User } from "../entity/user";
 import { getConnection } from "typeorm";
-import { dbOptions } from "../config";
+import { dbOptions } from "../global/config";
 import { Admin } from "../entity/admin";
-import { UserType } from "../entity/qna";
+import { UserType, STUDENT, ADMIN } from "../entity/qna";
+import * as socketAuth from "socketio-jwt-auth";
+import {
+  InvalidTokenTypeError,
+  UnknownUserError,
+} from "../global/error/errorCode";
 
-export const verifyFunc = async (payload, done) => {
+export const verifyFunc: socketAuth.verifyFunc = async (payload, done) => {
   try {
+    if (payload.type === "refresh_token") {
+      done(InvalidTokenTypeError);
+    }
     const connection = getConnection(dbOptions.CONNECTION_NAME);
     const userRepo = connection.getRepository(User);
     const adminRepo = connection.getRepository(Admin);
@@ -14,12 +22,12 @@ export const verifyFunc = async (payload, done) => {
     let info;
     if (user) {
       info = user;
-      info.userType = UserType.STUDENT;
+      info.userType = STUDENT;
     } else if (admin) {
       info = admin;
-      info.userType = UserType.ADMIN;
+      info.userType = ADMIN;
     } else {
-      return done(null, false, "user does not exist");
+      return done(UnknownUserError);
     }
     return done(null, info);
   } catch (e) {
