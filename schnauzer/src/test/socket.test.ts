@@ -27,11 +27,8 @@ before((done) => {
 
   httpServer = http.createServer().listen();
   httpServerAddr = httpServer.address();
-  console.log("after createServer");
   ioServer = ioBack(httpServer);
-  console.log("after ioBack");
   socketInit(ioServer);
-  console.log("after socketInit");
   done();
 });
 
