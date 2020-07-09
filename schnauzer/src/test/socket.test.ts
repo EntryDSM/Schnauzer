@@ -33,12 +33,14 @@ before((done) => {
 });
 
 after((done) => {
-  ioServer.close();
-  httpServer.close();
-  disconnectSocket(userSocket);
-  disconnectSocket(adminSocket);
-  disconnectSocket(otherAdminSocket);
-  done();
+  ioServer.close(() => {
+    httpServer.close(() => {
+      disconnectSocket(userSocket);
+      disconnectSocket(adminSocket);
+      disconnectSocket(otherAdminSocket);
+      done();
+    });
+  });
 });
 
 describe("basic socket.io example", function () {
