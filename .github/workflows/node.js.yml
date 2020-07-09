@@ -35,9 +35,12 @@ jobs:
       
       - name: Dependencies Installation
         run: npm i
+        working-directory: ./schnauzer
         
       - name: build
         run: npm run build
+        working-directory: ./schnauzer
         
       - name: test
         run: npm test
+        working-directory: ./schnauzer
