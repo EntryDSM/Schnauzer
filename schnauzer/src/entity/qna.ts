@@ -11,10 +11,9 @@ import { getConnection } from "./connection";
 import { dbOptions } from "../global/config";
 import { User } from "./user";
 
-export enum UserType {
-  ADMIN = "admin",
-  STUDENT = "student",
-}
+export type UserType = "admin" | "student";
+export const ADMIN = "admin";
+export const STUDENT = "student";
 
 @Entity()
 export class Qna extends ValidationEntity {
@@ -31,12 +30,9 @@ export class Qna extends ValidationEntity {
   @IsEmail()
   user_email: string;
 
-  @Column({
-    type: "enum",
-    enum: UserType,
-  })
+  @Column({ length: 20 })
   @IsNotEmpty()
-  to: UserType;
+  to: string;
 
   @Column({ length: 100 })
   @IsNotEmpty()
