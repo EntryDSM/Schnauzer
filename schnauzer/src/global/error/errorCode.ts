@@ -12,12 +12,7 @@ export const ExpiredOrInvalidTokenError = new ErrorResponse(
   "a01",
   "expired or invalid token"
 );
-export const InvalidTokenTypeError = new ErrorResponse(
-  403,
-  "a02",
-  "invalid token type"
-);
-export const UnknownUserError = new ErrorResponse(409, "a03", "unknown user");
+export const UnknownUserError = new ErrorResponse(403, "a02", "unknown user");
 
 export const DatabaseUpdateError = new ErrorResponse(
   400,

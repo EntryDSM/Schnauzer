@@ -5,14 +5,14 @@ import { Admin } from "../entity/admin";
 import { UserType, STUDENT, ADMIN } from "../entity/qna";
 import * as socketAuth from "socketio-jwt-auth";
 import {
-  InvalidTokenTypeError,
   UnknownUserError,
+  ExpiredOrInvalidTokenError,
 } from "../global/error/errorCode";
 
 export const verifyFunc: socketAuth.verifyFunc = async (payload, done) => {
   try {
     if (payload.type === "refresh_token") {
-      done(InvalidTokenTypeError);
+      done(ExpiredOrInvalidTokenError);
     }
     const connection = getConnection(dbOptions.CONNECTION_NAME);
     const userRepo = connection.getRepository(User);
