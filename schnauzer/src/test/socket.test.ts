@@ -27,9 +27,9 @@ before((done) => {
 
   httpServer = http.createServer().listen();
   httpServerAddr = httpServer.address();
-  done();
   ioServer = ioBack(httpServer);
   socketInit(ioServer);
+  done();
 });
 
 after((done) => {
