@@ -1,0 +1,49 @@
+{
+  "name": "schnauzer",
+  "version": "0.0.1",
+  "description": "EntryDSM QnA API",
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/chai-http": "^4.2.0",
+    "@types/cors": "^2.8.6",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.6",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^8.0.29",
+    "@types/socket.io": "^2.1.8",
+    "@types/socket.io-client": "^1.4.33",
+    "@types/socketio-jwt-auth": "0.0.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "cross-env": "^7.0.2",
+    "mocha": "^7.2.0",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "socket.io-client": "^2.3.0",
+    "ts-node": "3.3.0",
+    "typescript": "3.3.3333"
+  },
+  "dependencies": {
+    "class-validator": "^0.12.2",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.14.1",
+    "reflect-metadata": "^0.1.10",
+    "socket.io": "^2.3.0",
+    "socketio-jwt-auth": "^0.1.0",
+    "typeorm": "0.2.25"
+  },
+  "scripts": {
+    "test": "cross-env NODE_ENV=test mocha --exit -r ts-node/register src/test/**/*.test.ts",
+    "dev": "cross-env NODE_ENV=test nodemon --exec ts-node src/index.ts",
+    "start": "npm run build && npm run execute",
+    "build": "tsc",
+    "execute": "node build/src"
+  },
+  "prettier": {
+    "tabWidth": 2
+  }
+}

@@ -1,0 +1,23 @@
+{
+   "compilerOptions": {
+      "lib": [
+         "es5",
+         "es6",
+         "dom"
+      ],
+      "target": "ES6",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "outDir": "./build",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "sourceMap": true,
+      "esModuleInterop": false,
+      "rootDir": "."
+   },
+   "include": [
+      "src/**/*",
+      "ormconfig.ts"
+   ],
+   "exclude": ["node_modules", "src/test"]
+}
