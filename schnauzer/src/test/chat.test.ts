@@ -114,14 +114,14 @@ describe("GET /qna/chats", () => {
           done();
         });
     });
-    it("should have status 409 with amdin email token", (done) => {
+    it("should have status 403 with amdin email token", (done) => {
       chai
         .request(server.application)
         .get("/v5/qna/chats")
         .set({ Authorization: adminEmailToken })
         .query({ page: 0 })
         .end((err, res) => {
-          res.should.have.status(409);
+          res.should.have.status(403);
           done();
         });
     });
@@ -145,14 +145,14 @@ describe("GET /qna/last-chats", () => {
     });
   });
   describe("fail", () => {
-    it("should have status 409 with user token", (done) => {
+    it("should have status 403 with user token", (done) => {
       chai
         .request(server.application)
         .get("/v5/qna/last-chats")
         .set({ Authorization: validToken })
         .query({ page: 0 })
         .end((err, res) => {
-          res.should.have.status(409);
+          res.should.have.status(403);
           done();
         });
     });
@@ -176,14 +176,14 @@ describe("GET /qna/chats/:email", () => {
     });
   });
   describe("fail", () => {
-    it("should have status 409 with user token", (done) => {
+    it("should have status 403 with user token", (done) => {
       chai
         .request(server.application)
         .get("/v5/qna/chats/user1@example.com")
         .set({ Authorization: validToken })
         .query({ page: 0 })
         .end((err, res) => {
-          res.should.have.status(409);
+          res.should.have.status(403);
           done();
         });
     });
@@ -233,14 +233,14 @@ describe("GET /qna/search/:name", () => {
     });
   });
   describe("fail", () => {
-    it("should have status 409 with user token", (done) => {
+    it("should have status 403 with user token", (done) => {
       chai
         .request(server.application)
         .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: validToken })
         .query({ page: 0 })
         .end((err, res) => {
-          res.should.have.status(409);
+          res.should.have.status(403);
           done();
         });
     });
