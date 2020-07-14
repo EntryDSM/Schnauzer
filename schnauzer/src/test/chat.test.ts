@@ -16,7 +16,7 @@ import { users } from "./data/user";
 import { admins } from "./data/admin";
 import server from "../app";
 import { Qna } from "../entity/qna";
-import { dbOptions, jwtSecret } from "../global/config";
+import { jwtSecret } from "../global/config";
 import { User } from "../entity/user";
 import { Admin } from "../entity/admin";
 
@@ -40,7 +40,7 @@ before((done) => {
     jwtSecret,
     "admin1@example.com"
   );
-  createConnection(dbOptions.CONNECTION_NAME).then((c) => {
+  createConnection().then((c) => {
     connection = c;
     done();
   });

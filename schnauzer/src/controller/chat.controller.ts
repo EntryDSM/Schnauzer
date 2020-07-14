@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getConnection } from "../entity/connection";
+import { getConnection } from "typeorm";
 import { Qna, UserType } from "../entity/qna";
 import { User } from "../entity/user";
 
