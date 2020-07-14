@@ -27,18 +27,20 @@ before((done) => {
 
   httpServer = http.createServer().listen();
   httpServerAddr = httpServer.address();
+  done();
   ioServer = ioBack(httpServer);
   socketInit(ioServer);
-  done();
 });
 
 after((done) => {
-  ioServer.close();
-  httpServer.close();
-  disconnectSocket(userSocket);
-  disconnectSocket(adminSocket);
-  disconnectSocket(otherAdminSocket);
-  done();
+  ioServer.close(() => {
+    httpServer.close(() => {
+      disconnectSocket(userSocket);
+      disconnectSocket(adminSocket);
+      disconnectSocket(otherAdminSocket);
+      done();
+    });
+  });
 });
 
 describe("basic socket.io example", function () {

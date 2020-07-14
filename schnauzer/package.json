@@ -37,7 +37,7 @@
     "typeorm": "0.2.25"
   },
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha -r ts-node/register src/test/**/*.test.ts",
+    "test": "cross-env NODE_ENV=test mocha --exit -r ts-node/register src/test/**/*.test.ts",
     "dev": "cross-env NODE_ENV=test nodemon --exec ts-node src/index.ts",
     "start": "npm run build && npm run execute",
     "build": "tsc",

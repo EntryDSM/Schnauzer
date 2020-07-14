@@ -1,10 +1,7 @@
 import { verify } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { jwtSecret } from "../global/config";
-import {
-  InvalidTokenTypeError,
-  ExpiredOrInvalidTokenError,
-} from "../global/error/errorCode";
+import { ExpiredOrInvalidTokenError } from "../global/error/errorCode";
 
 export default (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -13,13 +10,10 @@ export default (req: Request, res: Response, next: NextFunction) => {
       jwtSecret
     );
     if (res.locals.jwtPayload.type === "refresh_token") {
-      throw InvalidTokenTypeError;
+      throw ExpiredOrInvalidTokenError;
     }
     next();
   } catch (e) {
-    if (e === InvalidTokenTypeError) {
-      return next(e);
-    }
     next(ExpiredOrInvalidTokenError);
   }
 };

@@ -1,12 +1,13 @@
 import { Server, Socket } from "socket.io";
-import { Qna, UserType } from "../entity/qna";
+import { Qna, UserType, ADMIN, STUDENT } from "../entity/qna";
 import { Sockets } from "./entity/sockets";
 import { Event } from "./entity/events";
+import { DatabaseUpdateError } from "../global/error/errorCode";
 
 const sockets = new Sockets();
 
 export const socketInit = (socket: Socket, type: UserType, io: Server) => {
-  if (type === UserType.ADMIN) {
+  if (type === ADMIN) {
     sockets.addAdmin(socket);
 
     socket.on(
@@ -23,11 +24,11 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
             user_email: userEmail,
             content,
             admin_email: socket.request.user.email,
-            to: UserType.STUDENT,
+            to: STUDENT,
           });
           io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
         } catch (e) {
-          socket.emit(Event.SAVE_ERROR, e);
+          socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
       }
     );
@@ -37,14 +38,14 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
         await Qna.updateIsReadByUserEmail(userEmail);
         io.to(userEmail).emit(Event.RECEIVE_READ_CHECK, userEmail);
       } catch (e) {
-        socket.emit(Event.SAVE_ERROR, e);
+        socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
       }
     });
 
     socket.on("disconnect", () => {
       sockets.adminLeaveRooms(socket);
     });
-  } else if (type === UserType.STUDENT) {
+  } else if (type === STUDENT) {
     sockets.addUser(socket);
 
     socket.on(Event.NEW_MESSAGE, async ({ content }: { content: string }) => {
@@ -54,11 +55,11 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
           user_email: userEmail,
           content,
           admin_email: "broadcast@broadcast.com",
-          to: UserType.ADMIN,
+          to: ADMIN,
         });
         io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
       } catch (e) {
-        socket.emit(Event.SAVE_ERROR, e);
+        socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
       }
     });
 

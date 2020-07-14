@@ -1,8 +1,8 @@
 import { ErrorRequestHandler } from "express";
-import { Error } from "../global/error/error";
+import { ErrorResponse } from "../global/error/error";
 
 export const errorHandler: ErrorRequestHandler = (
-  err: Error,
+  err: ErrorResponse,
   req,
   res,
   next
@@ -10,6 +10,6 @@ export const errorHandler: ErrorRequestHandler = (
   res.status(err.status || 500).json({
     message: err.message || "internal server error",
     status: err.status || 500,
-    code: err.code || "s00",
+    code: err.code || "c03",
   });
 };
