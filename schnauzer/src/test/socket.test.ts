@@ -4,7 +4,7 @@ import * as ioBack from "socket.io";
 import * as chai from "chai";
 import Socket = SocketIOClient.Socket;
 import { Server } from "http";
-import IoServer = SocketIO.Server;
+import { Socket as ServerSocket, Server as IoServer } from "socket.io";
 import { authenticate } from "socketio-jwt-auth";
 import { jwtSecret } from "../global/config";
 import { verifyFunc } from "../socket/verify";
@@ -17,7 +17,7 @@ chai.should();
 let userSocket: Socket, adminSocket: Socket, otherAdminSocket: Socket;
 let httpServer: Server;
 let httpServerAddr;
-let ioServer: IoServer;
+let ioServer: IoServer, socket: ServerSocket;
 let userToken: string, adminToken: string, otherAdminToken: string;
 
 before((done) => {
@@ -27,7 +27,8 @@ before((done) => {
 
   httpServer = http.createServer().listen();
   httpServerAddr = httpServer.address();
-  ioServer = ioBack(httpServer);
+  ioServer = ioBack().listen(5000);
+  ioServer.bind(httpServer);
   socketInit(ioServer);
   done();
 });
