@@ -44,6 +44,9 @@ jobs:
       - name: install codecov
         run: npm i -g codecov
 
+      - name: report
+        run: npm run report
+
       - name: codecov
         run: codecov
 

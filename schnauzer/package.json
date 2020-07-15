@@ -43,6 +43,7 @@
     "start": "npm run build && npm run execute",
     "build": "tsc",
     "execute": "node build/src",
+    "report": "nyc report --reporter=text-lcov > coverage.lcov",
     "cover": "nyc mocha --timeout 10000 --exit -r ts-node/register src/test/**/*.test.ts"
   },
   "prettier": {
