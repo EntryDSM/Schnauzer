@@ -19,6 +19,7 @@
     "cross-env": "^7.0.2",
     "mocha": "^7.2.0",
     "nodemon": "^2.0.4",
+    "nyc": "^15.1.0",
     "prettier": "^2.0.5",
     "socket.io-client": "^2.3.0",
     "ts-node": "3.3.0",
@@ -41,7 +42,8 @@
     "dev": "cross-env NODE_ENV=test nodemon --exec ts-node src/index.ts",
     "start": "npm run build && npm run execute",
     "build": "tsc",
-    "execute": "node build/src"
+    "execute": "node build/src",
+    "cover": "cross-env NODE_ENV=test nyc mocha --exit -r ts-node/register src/test/**/*.test.ts"
   },
   "prettier": {
     "tabWidth": 2
