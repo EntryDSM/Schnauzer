@@ -46,6 +46,7 @@ jobs:
 
       - name: report
         run: npm run report
+        working-directory: ./schnauzer
 
       - name: codecov
         run: codecov
