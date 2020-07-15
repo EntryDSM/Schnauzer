@@ -41,6 +41,12 @@ jobs:
         run: npm run build
         working-directory: ./schnauzer
 
+      - name: install codecov
+        run: npm i -g codecov
+
+      - name: codecov
+        run: codecov
+
       - name: test
         run: npm run cover
         working-directory: ./schnauzer
