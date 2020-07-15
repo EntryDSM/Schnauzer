@@ -43,7 +43,7 @@
     "start": "npm run build && npm run execute",
     "build": "tsc",
     "execute": "node build/src",
-    "cover": "nyc mocha --exit -r ts-node/register src/test/**/*.test.ts"
+    "cover": "nyc mocha --timeout 6000 --exit -r ts-node/register src/test/**/*.test.ts"
   },
   "prettier": {
     "tabWidth": 2

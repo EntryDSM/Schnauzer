@@ -27,8 +27,7 @@ before((done) => {
 
   httpServer = http.createServer().listen();
   httpServerAddr = httpServer.address();
-  ioServer = ioBack().listen(5000);
-  ioServer.bind(httpServer);
+  ioServer = ioBack(httpServer);
   socketInit(ioServer);
   done();
 });
