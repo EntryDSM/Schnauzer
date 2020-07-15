@@ -44,13 +44,13 @@ jobs:
       - name: install codecov
         run: npm i -g codecov
 
-      - name: report
-        run: npm run report
-        working-directory: ./schnauzer
-
-      - name: codecov
-        run: codecov
-
       - name: test
         run: npm run cover
         working-directory: ./schnauzer
+
+      - name: report
+        run: npm run report
+        working-directory: ./schnauzer
+        
+      - name: codecov
+        run: codecov
