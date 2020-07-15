@@ -34,5 +34,5 @@ jobs:
         working-directory: ./schnauzer
 
       - name: test
-        run: npm run coverage
+        run: npm run cover
         working-directory: ./schnauzer
