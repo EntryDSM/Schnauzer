@@ -75,11 +75,18 @@ describe("basic socket.io example", function () {
     });
   });
   describe("admin", () => {
-    before((done) => {
+    beforeEach((done) => {
       adminSocket = connectSocketClient(adminToken, httpServerAddr);
       userSocket = connectSocketClient(userToken, httpServerAddr);
       otherAdminSocket = connectSocketClient(otherAdminToken, httpServerAddr);
 
+      done();
+    });
+
+    afterEach((done) => {
+      disconnectSocket(adminSocket);
+      disconnectSocket(userSocket);
+      disconnectSocket(otherAdminSocket);
       done();
     });
 
