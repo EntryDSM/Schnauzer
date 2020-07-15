@@ -50,10 +50,11 @@ describe("basic socket.io example", function () {
       done();
     });
 
-    afterEach((done) => {
+    after((done) => {
       disconnectSocket(userSocket);
       done();
     });
+
     it("should communicate", (done) => {
       userSocket.emit(Event.NEW_MESSAGE, {
         content: "안녕",
