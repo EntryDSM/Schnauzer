@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../entity/user";
 import { getConnection } from "typeorm";
-import { dbOptions } from "../global/config";
 import { UnknownUserError } from "../global/error/errorCode";
 import { Admin } from "../entity/admin";
 
@@ -12,7 +11,7 @@ export const isUser = async (
 ) => {
   const userEmail = res.locals.jwtPayload.sub;
   try {
-    const connection = getConnection(dbOptions.CONNECTION_NAME);
+    const connection = getConnection();
     const userRepo = connection.getRepository(User);
     if (!(await userRepo.findOne({ email: userEmail }))) {
       throw UnknownUserError;
@@ -30,7 +29,7 @@ export const isAdmin = async (
 ) => {
   const adminEmail = res.locals.jwtPayload.sub;
   try {
-    const connection = getConnection(dbOptions.CONNECTION_NAME);
+    const connection = getConnection();
     const adminRepo = connection.getRepository(Admin);
     if (!(await adminRepo.findOne({ email: adminEmail }))) {
       throw UnknownUserError;

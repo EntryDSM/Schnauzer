@@ -7,7 +7,7 @@ import {
 import { IsNotEmpty, IsEmail } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
 import { Like } from "typeorm";
-import { getConnection } from "./connection";
+import { getConnection } from "typeorm";
 import { dbOptions } from "../global/config";
 import { User } from "./user";
 

@@ -1,6 +1,5 @@
 import { User } from "../entity/user";
 import { getConnection } from "typeorm";
-import { dbOptions } from "../global/config";
 import { Admin } from "../entity/admin";
 import { UserType, STUDENT, ADMIN } from "../entity/qna";
 import * as socketAuth from "socketio-jwt-auth";
@@ -14,7 +13,7 @@ export const verifyFunc: socketAuth.verifyFunc = async (payload, done) => {
     if (payload.type === "refresh_token") {
       done(ExpiredOrInvalidTokenError);
     }
-    const connection = getConnection(dbOptions.CONNECTION_NAME);
+    const connection = getConnection();
     const userRepo = connection.getRepository(User);
     const adminRepo = connection.getRepository(Admin);
     const user = await userRepo.findOne({ email: payload.sub });

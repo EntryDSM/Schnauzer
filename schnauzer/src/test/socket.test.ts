@@ -4,7 +4,7 @@ import * as ioBack from "socket.io";
 import * as chai from "chai";
 import Socket = SocketIOClient.Socket;
 import { Server } from "http";
-import IoServer = SocketIO.Server;
+import { Socket as ServerSocket, Server as IoServer } from "socket.io";
 import { authenticate } from "socketio-jwt-auth";
 import { jwtSecret } from "../global/config";
 import { verifyFunc } from "../socket/verify";
@@ -17,7 +17,7 @@ chai.should();
 let userSocket: Socket, adminSocket: Socket, otherAdminSocket: Socket;
 let httpServer: Server;
 let httpServerAddr;
-let ioServer: IoServer;
+let ioServer: IoServer, socket: ServerSocket;
 let userToken: string, adminToken: string, otherAdminToken: string;
 
 before((done) => {
@@ -50,10 +50,11 @@ describe("basic socket.io example", function () {
       done();
     });
 
-    afterEach((done) => {
+    after((done) => {
       disconnectSocket(userSocket);
       done();
     });
+
     it("should communicate", (done) => {
       userSocket.emit(Event.NEW_MESSAGE, {
         content: "안녕",
@@ -74,11 +75,18 @@ describe("basic socket.io example", function () {
     });
   });
   describe("admin", () => {
-    before((done) => {
+    beforeEach((done) => {
       adminSocket = connectSocketClient(adminToken, httpServerAddr);
       userSocket = connectSocketClient(userToken, httpServerAddr);
       otherAdminSocket = connectSocketClient(otherAdminToken, httpServerAddr);
 
+      done();
+    });
+
+    afterEach((done) => {
+      disconnectSocket(adminSocket);
+      disconnectSocket(userSocket);
+      disconnectSocket(otherAdminSocket);
       done();
     });
 

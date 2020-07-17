@@ -14,7 +14,7 @@ export class SearchController {
     const { name } = req.params;
     const { page } = req.query;
     try {
-      const connection = getConnection(dbOptions.CONNECTION_NAME);
+      const connection = getConnection();
       const userRepo = connection.getRepository(User);
       const searchResult = await Qna.findLastChatOfEachUserByName(
         name,
