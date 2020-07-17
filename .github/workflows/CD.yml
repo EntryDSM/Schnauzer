@@ -1,0 +1,31 @@
+name: CD
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  CD:
+    runs-on: ubuntu-latest
+    env:
+      PRO_JWT_SECRET: ${{ secrets.PRO_JWT_SECRET }}
+      PRO_DB_HOST: ${{ secrets.PRO_DB_HOST }}
+      PRO_DB_PORT: ${{ secrets.PRO_DB_PORT }}
+      PRO_DB_USER: ${{ secrets.PRO_DB_USER }}
+      PRO_DB_PASSWORD: ${{ secrets.PRO_DB_PASSWORD }}
+      PRO_DB_NAME: ${{ secrets.PRO_DB_NAME }}
+      PRO_SERVER_PORT: ${{ secrets.PRO_SERVER_PORT }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: docker image build
+        run: docker build -t schnauzer .
+
+      - name: upload to registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: schnauzer
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
