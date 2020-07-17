@@ -13,6 +13,7 @@ ENV JWT_SECRET $PRO_JWT_SECRET
 COPY ./schnauzer/package*.json ./
 
 RUN npm ci --only=production
+RUN npm i -g typescript
 
 COPY ./schnauzer .
 
