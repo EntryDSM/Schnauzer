@@ -7,14 +7,15 @@ on:
 jobs:
   CD:
     runs-on: ubuntu-latest
+
     env:
-      PRO_JWT_SECRET: ${{ secrets.PRO_JWT_SECRET }}
-      PRO_DB_HOST: ${{ secrets.PRO_DB_HOST }}
-      PRO_DB_PORT: ${{ secrets.PRO_DB_PORT }}
-      PRO_DB_USER: ${{ secrets.PRO_DB_USER }}
-      PRO_DB_PASSWORD: ${{ secrets.PRO_DB_PASSWORD }}
-      PRO_DB_NAME: ${{ secrets.PRO_DB_NAME }}
-      PRO_SERVER_PORT: ${{ secrets.PRO_SERVER_PORT }}
+      JWT_SECRET: ${{ secrets.PRO_JWT_SECRET }}
+      DB_HOST: ${{ secrets.PRO_DB_HOST }}
+      DB_PORT: ${{ secrets.PRO_DB_PORT }}
+      DB_USER: ${{ secrets.PRO_DB_USER }}
+      DB_PASSWORD: ${{ secrets.PRO_DB_PASSWORD }}
+      DB_NAME: ${{ secrets.PRO_DB_NAME }}
+      SERVER_PORT: ${{ secrets.PRO_SERVER_PORT }}
 
     steps:
       - uses: actions/checkout@v2
