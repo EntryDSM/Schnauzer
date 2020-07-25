@@ -6,7 +6,6 @@ on:
 
 jobs:
   CD:
-    needs: CI
     runs-on: ubuntu-latest
 
     env:
