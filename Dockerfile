@@ -16,5 +16,8 @@ RUN npm ci
 RUN npm i -g typescript
 
 COPY ./schnauzer .
+RUN npm run build
 
 EXPOSE 8080
+
+CMD ["node", "build/src"]
