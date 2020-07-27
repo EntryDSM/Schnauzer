@@ -19,8 +19,8 @@ COPY ./schnauzer .
 RUN npm run build
 RUN rm -r ./src
 RUN rm ormconfig.ts
-RUN mv ./build/ormconfig.js ./ormconfig.js
+RUN cp ./build/* ./
 
 EXPOSE 8080
 
-CMD ["node", "build/src"]
+CMD ["node", "src"]
