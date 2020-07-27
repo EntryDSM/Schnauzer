@@ -19,7 +19,7 @@ COPY ./schnauzer .
 RUN npm run build
 RUN rm -r ./src
 RUN rm ormconfig.ts
-RUN cp ./build/* ./
+RUN cp -r ./build/* ./
 
 EXPOSE 8080
 
