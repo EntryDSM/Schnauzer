@@ -7,20 +7,20 @@ on:
 jobs:
   CD:
     runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: ${{ secrets.PRO_JWT_SECRET }}
+      DB_HOST: ${{ secrets.PRO_DB_HOST }}
+      DB_PORT: ${{ secrets.PRO_DB_PORT }}
+      DB_USER: ${{ secrets.PRO_DB_USER }}
+      DB_PASSWORD: ${{ secrets.PRO_DB_PASSWORD }}
+      DB_NAME: ${{ secrets.PRO_DB_NAME }}
+      SERVER_PORT: ${{ secrets.PRO_SERVER_PORT }}
 
     steps:
       - uses: actions/checkout@v2
 
       - name: docker image build
         run: docker build -t schnauzer .
-        env:
-          JWT_SECRET: ${{ secrets.PRO_JWT_SECRET }}
-          DB_HOST: ${{ secrets.PRO_DB_HOST }}
-          DB_PORT: ${{ secrets.PRO_DB_PORT }}
-          DB_USER: ${{ secrets.PRO_DB_USER }}
-          DB_PASSWORD: ${{ secrets.PRO_DB_PASSWORD }}
-          DB_NAME: ${{ secrets.PRO_DB_NAME }}
-          SERVER_PORT: ${{ secrets.PRO_SERVER_PORT }}
 
       - name: upload to registry
         uses: elgohr/Publish-Docker-Github-Action@master
