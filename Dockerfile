@@ -17,6 +17,7 @@ RUN npm i -g typescript
 
 COPY ./schnauzer .
 RUN npm run build
+RUN rm -r ./schnauzer
 
 EXPOSE 8080
 
