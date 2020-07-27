@@ -17,7 +17,8 @@ RUN npm i -g typescript
 
 COPY ./schnauzer .
 RUN npm run build
-RUN rm -r ./schnauzer
+RUN rm -r ./src
+RUN rm ormconfig.ts
 
 EXPOSE 8080
 
