@@ -48,5 +48,6 @@
   },
   "prettier": {
     "tabWidth": 2
-  }
+  },
+  "type": "module"
 }
