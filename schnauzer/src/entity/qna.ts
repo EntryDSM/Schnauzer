@@ -43,8 +43,8 @@ export class Qna extends ValidationEntity {
 
   @Column({
     type: "tinyint",
-    width: 2,
-    default: 0,
+    width: 1,
+    default: false,
     insert: false,
   })
   is_read: boolean;

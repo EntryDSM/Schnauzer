@@ -25,7 +25,7 @@ export class User extends ValidationEntity {
   @Column({ nullable: true, select: false, length: 20 })
   grade_type: string;
 
-  @Column({ width: 2, nullable: true, select: false })
+  @Column({ width: 1, nullable: true, select: false })
   is_daejeon: boolean;
 
   @Column({ length: 15, nullable: true })
