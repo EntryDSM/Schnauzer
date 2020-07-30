@@ -4,7 +4,7 @@ import { ValidationEntity } from "./validationEntity";
 
 @Entity()
 export class User extends ValidationEntity {
-  @PrimaryColumn({ length: 100 })
+  @Column({ length: 100, unique: true })
   @IsEmail()
   email: string;
 
@@ -12,7 +12,7 @@ export class User extends ValidationEntity {
   @IsNotEmpty()
   password: string;
 
-  @Column({ type: "int" })
+  @PrimaryColumn({ type: "int" })
   @IsNotEmpty()
   receipt_code: number;
 
@@ -49,14 +49,14 @@ export class User extends ValidationEntity {
   @Column({ length: 500, nullable: true, select: false })
   address: string;
 
+  @Column({ length: 250, nullable: true, select: false })
+  detail_address: string;
+
   @Column({ length: 5, nullable: true, select: false })
   post_code: string;
 
   @Column({ length: 45, nullable: true, select: false })
   user_photo: string;
-
-  @Column({ length: 45, nullable: true, select: false })
-  home_tel: string;
 
   @Column({ length: 1600, nullable: true, select: false })
   self_introduction: string;

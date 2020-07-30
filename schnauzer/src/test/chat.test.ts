@@ -81,7 +81,7 @@ describe("GET /qna/chats", () => {
         .request(server.application)
         .get("/v5/qna/chats")
         .set({ Authorization: validToken })
-        .query({ page: 0 })
+        .query({ page: 0, receiptCode: 30003 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -94,7 +94,7 @@ describe("GET /qna/chats", () => {
         .request(server.application)
         .get("/v5/qna/chats")
         .set({ Authorization: validToken })
-        .query({ page: 1 })
+        .query({ page: 1, receiptCode: 30003 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -137,6 +137,7 @@ describe("GET /qna/last-chats", () => {
         .set({ Authorization: adminEmailToken })
         .query({ page: 0 })
         .end((err, res) => {
+          console.log(res.body);
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
           res.body.should.deep.equal(getLastChatsExpectedResult);
@@ -159,15 +160,16 @@ describe("GET /qna/last-chats", () => {
   });
 });
 
-describe("GET /qna/chats/:email", () => {
+describe("GET /qna/chats/:receiptCode", () => {
   describe("succeess", () => {
     it("should return expected object", (done) => {
       chai
         .request(server.application)
-        .get("/v5/qna/chats/user1@example.com")
+        .get("/v5/qna/chats/30001")
         .set({ Authorization: adminEmailToken })
         .query({ page: 0 })
         .end((err, res) => {
+          console.log(res.body);
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
           res.body.should.deep.equal(getChatsWithEmailExpectedResult);
@@ -179,7 +181,7 @@ describe("GET /qna/chats/:email", () => {
     it("should have status 403 with user token", (done) => {
       chai
         .request(server.application)
-        .get("/v5/qna/chats/user1@example.com")
+        .get("/v5/qna/chats/30001")
         .set({ Authorization: validToken })
         .query({ page: 0 })
         .end((err, res) => {

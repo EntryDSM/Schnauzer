@@ -5,12 +5,11 @@ import { User } from "../entity/user";
 
 export class ChatController {
   static getChats = async (req: Request, res: Response, next: NextFunction) => {
-    const userEmail = res.locals.jwtPayload.sub;
-    const { page } = req.query;
+    const { page, receiptCode } = req.query;
     const limit = 10;
     try {
-      const chats = await Qna.findByUserEmailWithPage(
-        userEmail,
+      const chats = await Qna.findByUserCodeWithPage(
+        Number(receiptCode),
         Number(page),
         limit
       );
@@ -25,12 +24,12 @@ export class ChatController {
     res: Response,
     next: NextFunction
   ) => {
-    const userEmail = req.params.email;
+    const { receiptCode } = req.params;
     const { page } = req.query;
     const limit = 10;
     try {
-      const chats = await Qna.findByUserEmailWithPage(
-        userEmail,
+      const chats = await Qna.findByUserCodeWithPage(
+        Number(receiptCode),
         Number(page),
         limit
       );
@@ -52,7 +51,9 @@ export class ChatController {
       let chats = await Qna.findLastChatOfEachUser(Number(page), 15);
       const lastChats = await Promise.all(
         chats.map(async (chat) => {
-          const user = await userRepo.findOne({ email: chat.user_email });
+          const user = await userRepo.findOne({
+            receipt_code: chat.user_receipt_code,
+          });
           return {
             ...chat,
             user,

@@ -8,7 +8,7 @@ const router = Router();
 
 router.get("/chats", jwtCheck, isUser, ChatController.getChats);
 router.get(
-  "/chats/:email",
+  "/chats/:receiptCode",
   jwtCheck,
   isAdmin,
   ChatController.getChatsWithEmail
