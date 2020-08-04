@@ -58,6 +58,7 @@ describe("basic socket.io example", function () {
     it("should communicate", (done) => {
       userSocket.emit(Event.NEW_MESSAGE, {
         content: "안녕",
+        receiptCode: 30003,
       });
       userSocket.on(Event.RECEIVE_MESSAGE, (message) => {
         delete message.created_at;
@@ -65,7 +66,7 @@ describe("basic socket.io example", function () {
         message.should.deep.equal({
           qna_id: 15,
           admin_email: "broadcast@broadcast.com",
-          user_email: "user3@example.com",
+          user_receipt_code: 30003,
           content: "안녕",
           to: "admin",
           is_read: 0,
@@ -95,13 +96,14 @@ describe("basic socket.io example", function () {
         adminSocket.emit(Event.NEW_MESSAGE, {
           content: "Hello",
           userEmail: "user3@example.com",
+          receiptCode: 30003,
         });
         adminSocket.on(Event.RECEIVE_MESSAGE, (message) => {
           delete message.created_at;
           message.should.deep.equal({
             qna_id: 15,
             admin_email: "admin1@example.com",
-            user_email: "user3@example.com",
+            user_receipt_code: 30003,
             content: "Hello",
             to: "student",
             is_read: 0,
@@ -110,7 +112,10 @@ describe("basic socket.io example", function () {
         });
       });
       it("should update is_read column", (done) => {
-        adminSocket.emit(Event.READ_CHECK, "user3@example.com");
+        adminSocket.emit(Event.READ_CHECK, {
+          userEmail: "user3@example.com",
+          receiptCode: 30003,
+        });
         otherAdminSocket.on(Event.RECEIVE_READ_CHECK, (userEmail: string) => {
           done();
         });

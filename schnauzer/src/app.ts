@@ -17,8 +17,14 @@ class App {
 
   constructor() {
     this.createApp();
-    this.createServer();
-    this.socket();
+  }
+
+  private createApp(): void {
+    this.app = express();
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(cors());
+
     this.app.use("/v5/qna", router);
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
@@ -28,15 +34,9 @@ class App {
     this.app.use(errorHandler);
   }
 
-  private createApp(): void {
-    this.app = express();
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: false }));
-    this.app.use(cors());
-  }
-
-  private createServer(): void {
+  private createServer(port: number): void {
     this.httpServer = createServer(this.app);
+    this.httpServer.listen(port);
   }
 
   private socket() {
@@ -45,7 +45,8 @@ class App {
   }
 
   public listen(port: number) {
-    this.app.listen(port);
+    this.createServer(port);
+    this.socket();
   }
 
   get application() {

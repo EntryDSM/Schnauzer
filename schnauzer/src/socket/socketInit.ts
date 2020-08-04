@@ -13,15 +13,17 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
     socket.on(
       Event.NEW_MESSAGE,
       async ({
-        userEmail,
+        receiptCode,
         content,
+        userEmail,
       }: {
-        userEmail: string;
+        receiptCode: number;
         content: string;
+        userEmail: string;
       }) => {
         try {
           const storedChat = await Qna.createNewQna({
-            user_email: userEmail,
+            user_receipt_code: receiptCode,
             content,
             admin_email: socket.request.user.email,
             to: STUDENT,
@@ -33,14 +35,23 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
       }
     );
 
-    socket.on(Event.READ_CHECK, async (userEmail: string) => {
-      try {
-        await Qna.updateIsReadByUserEmail(userEmail);
-        io.to(userEmail).emit(Event.RECEIVE_READ_CHECK, userEmail);
-      } catch (e) {
-        socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
+    socket.on(
+      Event.READ_CHECK,
+      async ({
+        userEmail,
+        receiptCode,
+      }: {
+        userEmail: string;
+        receiptCode: number;
+      }) => {
+        try {
+          await Qna.updateIsReadByReceiptCode(receiptCode);
+          io.to(userEmail).emit(Event.RECEIVE_READ_CHECK, userEmail);
+        } catch (e) {
+          socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
+        }
       }
-    });
+    );
 
     socket.on("disconnect", () => {
       sockets.adminLeaveRooms(socket);
@@ -48,20 +59,29 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
   } else if (type === STUDENT) {
     sockets.addUser(socket);
 
-    socket.on(Event.NEW_MESSAGE, async ({ content }: { content: string }) => {
-      try {
-        const userEmail = socket.request.user.email;
-        const storedChat = await Qna.createNewQna({
-          user_email: userEmail,
-          content,
-          admin_email: "broadcast@broadcast.com",
-          to: ADMIN,
-        });
-        io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
-      } catch (e) {
-        socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
+    socket.on(
+      Event.NEW_MESSAGE,
+      async ({
+        content,
+        receiptCode,
+      }: {
+        content: string;
+        receiptCode: number;
+      }) => {
+        try {
+          const userEmail = socket.request.user.email;
+          const storedChat = await Qna.createNewQna({
+            user_receipt_code: receiptCode,
+            content,
+            admin_email: "broadcast@broadcast.com",
+            to: ADMIN,
+          });
+          io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
+        } catch (e) {
+          socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
+        }
       }
-    });
+    );
 
     socket.on("disconnect", () => {
       sockets.userLeaveRooms(socket);

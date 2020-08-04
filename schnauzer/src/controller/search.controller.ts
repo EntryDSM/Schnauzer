@@ -23,7 +23,9 @@ export class SearchController {
       );
       const lastChats = await Promise.all(
         searchResult.map(async (chat) => {
-          const user = await userRepo.findOne({ email: chat.user_email });
+          const user = await userRepo.findOne({
+            receipt_code: chat.user_receipt_code,
+          });
           return {
             ...chat,
             user,
