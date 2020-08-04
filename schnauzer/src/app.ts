@@ -24,6 +24,14 @@ class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cors());
+
+    this.app.use("/v5/qna", router);
+
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      next(ApiNotFoundError);
+    });
+
+    this.app.use(errorHandler);
   }
 
   private createServer(port: number): void {
@@ -39,17 +47,10 @@ class App {
   public listen(port: number) {
     this.createServer(port);
     this.socket();
-    this.app.use("/v5/qna", router);
-
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
-      next(ApiNotFoundError);
-    });
-
-    this.app.use(errorHandler);
   }
 
   get application() {
-    return this.httpServer;
+    return this.app;
   }
 }
 
