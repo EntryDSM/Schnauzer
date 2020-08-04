@@ -8,7 +8,7 @@ const option: ConnectionOptions = {
   username: dbOptions.DB_USER,
   password: dbOptions.DB_PASSWORD,
   database: dbOptions.DB_NAME,
-  synchronize: true,
+  synchronize: false,
   logging: false,
   entities: ["./src/entity/**/*.ts"],
 };
