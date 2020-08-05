@@ -40,7 +40,7 @@ class App {
   }
 
   private socket() {
-    this.io = SocketIO.listen(this.httpServer);
+    this.io = SocketIO.listen(this.httpServer, { origins: "*:*" });
     socketInit(this.io);
   }
 
