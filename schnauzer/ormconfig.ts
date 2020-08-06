@@ -1,5 +1,8 @@
 import { ConnectionOptions } from "typeorm";
 import { dbOptions } from "./src/global/config";
+import { User } from "./src/entity/user";
+import { Admin } from "./src/entity/admin";
+import { Qna } from "./src/entity/qna";
 
 const option: ConnectionOptions = {
   type: "mysql",
@@ -10,7 +13,7 @@ const option: ConnectionOptions = {
   database: dbOptions.DB_NAME,
   synchronize: false,
   logging: false,
-  entities: ["./src/entity/**/*.ts"],
+  entities: [User, Admin, Qna],
 };
 
 export = option;

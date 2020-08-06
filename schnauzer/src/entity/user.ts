@@ -70,9 +70,9 @@ export class User extends ValidationEntity {
   @Column({ length: 1600, nullable: true, select: false })
   study_plan: string;
 
-  @CreateDateColumn({ select: false })
+  @Column({ select: false })
   created_at: Date;
 
-  @UpdateDateColumn({ select: false })
+  @Column({ select: false })
   modified_at: Date;
 }

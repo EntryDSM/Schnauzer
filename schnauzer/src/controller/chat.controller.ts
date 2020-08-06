@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { getConnection } from "typeorm";
-import { Qna, UserType } from "../entity/qna";
+import { Qna } from "../entity/qna";
 import { User } from "../entity/user";
 
 export class ChatController {
