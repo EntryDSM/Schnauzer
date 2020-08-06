@@ -8,6 +8,7 @@ export const chatExample = [
     to: ADMIN,
     content: "안녕하세요",
     created_at: "2020-06-03T05:12:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 2,
@@ -16,6 +17,7 @@ export const chatExample = [
     to: STUDENT,
     content: "반갑습니다",
     created_at: "2020-06-03T05:13:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 3,
@@ -24,6 +26,7 @@ export const chatExample = [
     to: STUDENT,
     content: "무슨 일 하세요?",
     created_at: "2020-06-03T05:15:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 4,
@@ -32,6 +35,7 @@ export const chatExample = [
     to: ADMIN,
     content: "안녕하세요",
     created_at: "2020-06-03T05:16:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 5,
@@ -40,6 +44,7 @@ export const chatExample = [
     to: ADMIN,
     content: "공부합니다.",
     created_at: "2020-06-03T05:17:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 6,
@@ -48,6 +53,7 @@ export const chatExample = [
     to: STUDENT,
     content: "아 그렇군요.",
     created_at: "2020-06-03T05:18:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 7,
@@ -56,6 +62,7 @@ export const chatExample = [
     to: STUDENT,
     content: "열심히 하세요.",
     created_at: "2020-06-03T05:20:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 8,
@@ -64,6 +71,7 @@ export const chatExample = [
     to: STUDENT,
     content: "화이팅.",
     created_at: "2020-06-03T05:22:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 9,
@@ -72,6 +80,7 @@ export const chatExample = [
     to: ADMIN,
     content: "감사합니다.",
     created_at: "2020-06-03T05:23:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 10,
@@ -80,6 +89,7 @@ export const chatExample = [
     to: ADMIN,
     content: "감사합니다.",
     created_at: "2020-06-03T05:24:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 11,
@@ -88,6 +98,7 @@ export const chatExample = [
     to: ADMIN,
     content: "감사합니다.",
     created_at: "2020-06-03T05:25:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 12,
@@ -96,6 +107,7 @@ export const chatExample = [
     to: ADMIN,
     content: "감사합니다.",
     created_at: "2020-06-03T05:26:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 13,
@@ -104,6 +116,7 @@ export const chatExample = [
     to: ADMIN,
     content: "감사합니다.",
     created_at: "2020-06-03T05:27:40.000Z",
+    is_read: false,
   },
   {
     qna_id: 14,
@@ -112,6 +125,7 @@ export const chatExample = [
     to: ADMIN,
     content: "감사합니다.",
     created_at: "2020-06-03T05:28:40.000Z",
+    is_read: false,
   },
 ];
 
