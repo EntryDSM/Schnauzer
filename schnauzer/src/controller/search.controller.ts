@@ -4,6 +4,8 @@ import { dbOptions } from "../global/config";
 import { Admin } from "../entity/admin";
 import { Qna } from "../entity/qna";
 import { User } from "../entity/user";
+import hasNullOrUndefined from "../global/utils/paramsCheck";
+import { InvalidParameterError } from "../global/error/errorCode";
 
 export class SearchController {
   static searchByName = async (
@@ -13,6 +15,7 @@ export class SearchController {
   ) => {
     const { name } = req.params;
     const { page } = req.query;
+    hasNullOrUndefined([name, page]) && next(InvalidParameterError);
     try {
       const connection = getConnection();
       const userRepo = connection.getRepository(User);

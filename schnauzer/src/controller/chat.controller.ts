@@ -2,11 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import { getConnection } from "typeorm";
 import { Qna } from "../entity/qna";
 import { User } from "../entity/user";
+import { InvalidParameterError } from "../global/error/errorCode";
+import hasNullOrUndefined from "../global/utils/paramsCheck";
 
 export class ChatController {
   static getChats = async (req: Request, res: Response, next: NextFunction) => {
     const { sub } = res.locals.jwtPayload;
     const { page } = req.query;
+    hasNullOrUndefined([sub, page]) && next(InvalidParameterError);
     const limit = 10;
     try {
       const chats = await Qna.findByUserEmailWithPage(sub, Number(page), limit);
@@ -24,6 +27,7 @@ export class ChatController {
     const { receiptCode } = req.params;
     const { page } = req.query;
     const limit = 10;
+    hasNullOrUndefined([receiptCode, page]) && next(InvalidParameterError);
     try {
       const chats = await Qna.findByUserCodeWithPage(
         Number(receiptCode),
@@ -42,6 +46,7 @@ export class ChatController {
     next: NextFunction
   ) => {
     const { page } = req.query;
+    hasNullOrUndefined([page]) && next(InvalidParameterError);
     try {
       const connection = getConnection();
       const userRepo = connection.getRepository(User);
