@@ -170,7 +170,6 @@ describe("GET /qna/chats/:receiptCode", () => {
         .set({ Authorization: adminEmailToken })
         .query({ page: 0 })
         .end((err, res) => {
-          console.log(res);
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
           res.body.should.deep.equal(getChatsWithEmailExpectedResult);
