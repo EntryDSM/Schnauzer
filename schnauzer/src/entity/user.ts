@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { IsEmail, IsNotEmpty } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
 
@@ -64,6 +70,9 @@ export class User extends ValidationEntity {
   @Column({ length: 1600, nullable: true, select: false })
   study_plan: string;
 
-  @CreateDateColumn({ select: false })
+  @Column({ select: false })
   created_at: Date;
+
+  @Column({ select: false })
+  modified_at: Date;
 }

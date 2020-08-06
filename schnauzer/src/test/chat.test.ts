@@ -69,9 +69,11 @@ afterEach((done) => {
   const qnaRepo: Repository<Qna> = connection.getRepository(Qna);
   const userRepo: Repository<User> = connection.getRepository(User);
   const adminRepo: Repository<Admin> = connection.getRepository(Admin);
-  Promise.all([qnaRepo.clear(), userRepo.clear(), adminRepo.clear()]).then(() =>
-    done()
-  );
+  qnaRepo
+    .clear()
+    .then(() =>
+      Promise.all([userRepo.clear(), adminRepo.clear()]).then(() => done())
+    );
 });
 
 describe("GET /qna/chats", () => {

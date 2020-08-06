@@ -69,7 +69,7 @@ describe("basic socket.io example", function () {
           user_receipt_code: 30003,
           content: "안녕",
           to: "admin",
-          is_read: 0,
+          is_read: false,
         });
         done();
       });
@@ -106,7 +106,7 @@ describe("basic socket.io example", function () {
             user_receipt_code: 30003,
             content: "Hello",
             to: "student",
-            is_read: 0,
+            is_read: false,
           });
           done();
         });

@@ -38,14 +38,11 @@ export class Qna extends ValidationEntity {
   content: string;
 
   @Column()
-  @CreateDateColumn()
   created_at: Date;
 
   @Column({
     type: "tinyint",
     width: 1,
-    default: false,
-    insert: false,
   })
   is_read: boolean;
 
@@ -130,7 +127,11 @@ export class Qna extends ValidationEntity {
     admin_email: string;
     content: string;
     to: UserType;
+    is_read?: boolean;
+    created_at?: Date;
   }) {
+    qna.is_read = false;
+    qna.created_at = new Date(Date.now());
     const qnaRepo = getConnection().getRepository(Qna);
     return qnaRepo.save(qnaRepo.create(qna));
   }
