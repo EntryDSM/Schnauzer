@@ -46,12 +46,33 @@ export class Qna extends ValidationEntity {
   })
   is_read: boolean;
 
-  static findByUserCodeWithPage(code: number, page: number, limit: number) {
+  static async findByUserCodeWithPage(
+    receiptCode: number,
+    page: number,
+    limit: number
+  ) {
     return getConnection()
       .createQueryBuilder()
       .select("qna")
       .from(Qna, "qna")
-      .where("qna.user_receipt_code = :code", { code })
+      .where("qna.user_receipt_code = :receiptCode", { receiptCode })
+      .orderBy("created_at", "DESC")
+      .offset(page * limit)
+      .limit(limit)
+      .getMany();
+  }
+
+  static async findByUserEmailWithPage(
+    email: string,
+    page: number,
+    limit: number
+  ) {
+    const { receipt_code } = await User.findByEmail(email);
+    return getConnection()
+      .createQueryBuilder()
+      .select("qna")
+      .from(Qna, "qna")
+      .where("qna.user_receipt_code = :receipt_code", { receipt_code })
       .orderBy("created_at", "DESC")
       .offset(page * limit)
       .limit(limit)

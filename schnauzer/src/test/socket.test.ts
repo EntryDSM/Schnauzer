@@ -5,12 +5,14 @@ import * as chai from "chai";
 import Socket = SocketIOClient.Socket;
 import { Server } from "http";
 import { Socket as ServerSocket, Server as IoServer } from "socket.io";
-import { authenticate } from "socketio-jwt-auth";
 import { jwtSecret } from "../global/config";
-import { verifyFunc } from "../socket/verify";
 import { sign } from "jsonwebtoken";
 import socketInit from "../socket/index";
 import { Event } from "../socket/entity/events";
+import { Connection, getConnection, Repository } from "typeorm";
+import { Qna } from "../entity/qna";
+import { User } from "../entity/user";
+import { Admin } from "../entity/admin";
 
 chai.should();
 
@@ -19,8 +21,10 @@ let httpServer: Server;
 let httpServerAddr;
 let ioServer: IoServer, socket: ServerSocket;
 let userToken: string, adminToken: string, otherAdminToken: string;
+let connection: Connection;
 
 before((done) => {
+  connection = getConnection();
   userToken = generateToken("user3@example.com");
   adminToken = generateToken("admin1@example.com");
   otherAdminToken = generateToken("admin2@example.com");
@@ -44,6 +48,17 @@ after((done) => {
 });
 
 describe("basic socket.io example", function () {
+  afterEach((done) => {
+    const qnaRepo: Repository<Qna> = connection.getRepository(Qna);
+    const userRepo: Repository<User> = connection.getRepository(User);
+    const adminRepo: Repository<Admin> = connection.getRepository(Admin);
+    qnaRepo
+      .clear()
+      .then(() =>
+        Promise.all([userRepo.clear(), adminRepo.clear()]).then(() => done())
+      );
+  });
+
   describe("user", () => {
     before((done) => {
       userSocket = connectSocketClient(userToken, httpServerAddr);
@@ -58,7 +73,6 @@ describe("basic socket.io example", function () {
     it("should communicate", (done) => {
       userSocket.emit(Event.NEW_MESSAGE, {
         content: "안녕",
-        receiptCode: 30003,
       });
       userSocket.on(Event.RECEIVE_MESSAGE, (message) => {
         delete message.created_at;
@@ -96,7 +110,6 @@ describe("basic socket.io example", function () {
         adminSocket.emit(Event.NEW_MESSAGE, {
           content: "Hello",
           userEmail: "user3@example.com",
-          receiptCode: 30003,
         });
         adminSocket.on(Event.RECEIVE_MESSAGE, (message) => {
           delete message.created_at;
@@ -114,7 +127,6 @@ describe("basic socket.io example", function () {
       it("should update is_read column", (done) => {
         adminSocket.emit(Event.READ_CHECK, {
           userEmail: "user3@example.com",
-          receiptCode: 30003,
         });
         otherAdminSocket.on(Event.RECEIVE_READ_CHECK, (userEmail: string) => {
           done();

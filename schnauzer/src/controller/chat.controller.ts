@@ -5,14 +5,11 @@ import { User } from "../entity/user";
 
 export class ChatController {
   static getChats = async (req: Request, res: Response, next: NextFunction) => {
-    const { page, receiptCode } = req.query;
+    const { sub } = res.locals.jwtPayload;
+    const { page } = req.query;
     const limit = 10;
     try {
-      const chats = await Qna.findByUserCodeWithPage(
-        Number(receiptCode),
-        Number(page),
-        limit
-      );
+      const chats = await Qna.findByUserEmailWithPage(sub, Number(page), limit);
       res.status(200).json(chats);
     } catch (e) {
       next(e);

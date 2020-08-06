@@ -65,7 +65,7 @@ beforeEach((done) => {
     .catch((err) => console.log(err));
 });
 
-afterEach((done) => {
+after((done) => {
   const qnaRepo: Repository<Qna> = connection.getRepository(Qna);
   const userRepo: Repository<User> = connection.getRepository(User);
   const adminRepo: Repository<Admin> = connection.getRepository(Admin);
@@ -83,7 +83,7 @@ describe("GET /qna/chats", () => {
         .request(server.application)
         .get("/v5/qna/chats")
         .set({ Authorization: validToken })
-        .query({ page: 0, receiptCode: 30003 })
+        .query({ page: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -96,7 +96,7 @@ describe("GET /qna/chats", () => {
         .request(server.application)
         .get("/v5/qna/chats")
         .set({ Authorization: validToken })
-        .query({ page: 1, receiptCode: 30003 })
+        .query({ page: 1 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -170,6 +170,7 @@ describe("GET /qna/chats/:receiptCode", () => {
         .set({ Authorization: adminEmailToken })
         .query({ page: 0 })
         .end((err, res) => {
+          console.log(res);
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
           res.body.should.deep.equal(getChatsWithEmailExpectedResult);
