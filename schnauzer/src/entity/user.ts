@@ -4,6 +4,7 @@ import {
   PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  getConnection,
 } from "typeorm";
 import { IsEmail, IsNotEmpty } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
@@ -75,4 +76,8 @@ export class User extends ValidationEntity {
 
   @Column({ select: false })
   modified_at: Date;
+
+  static findByEmail(email: string) {
+    return getConnection().getRepository(User).findOne({ email });
+  }
 }
