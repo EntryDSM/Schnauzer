@@ -1,14 +1,8 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { IsNotEmpty, IsEmail } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
 import { Like } from "typeorm";
 import { getConnection } from "typeorm";
-import { dbOptions } from "../global/config";
 import { User } from "./user";
 
 export type UserType = "admin" | "student";
@@ -20,9 +14,7 @@ export class Qna extends ValidationEntity {
   @PrimaryGeneratedColumn()
   qna_id: number;
 
-  @Column({ length: 100 })
-  @IsNotEmpty()
-  @IsEmail()
+  @Column({ length: 100, nullable: true })
   admin_email: string;
 
   @Column()

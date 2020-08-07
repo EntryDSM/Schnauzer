@@ -1,11 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  getConnection,
-} from "typeorm";
+import { Entity, Column, PrimaryColumn, getConnection } from "typeorm";
 import { IsEmail, IsNotEmpty } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
 
@@ -53,7 +46,7 @@ export class User extends ValidationEntity {
   @Column({ length: 20, nullable: true, select: false })
   applicant_tel: string;
 
-  @Column({ length: 500, nullable: true, select: false })
+  @Column({ length: 250, nullable: true, select: false })
   address: string;
 
   @Column({ length: 250, nullable: true, select: false })
@@ -71,10 +64,10 @@ export class User extends ValidationEntity {
   @Column({ length: 1600, nullable: true, select: false })
   study_plan: string;
 
-  @Column({ select: false })
+  @Column({ select: false, type: "datetime" })
   created_at: Date;
 
-  @Column({ select: false })
+  @Column({ select: false, type: "datetime" })
   modified_at: Date;
 
   static findByEmail(email: string) {
