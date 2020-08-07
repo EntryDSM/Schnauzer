@@ -15,7 +15,6 @@ export class Qna extends ValidationEntity {
   qna_id: number;
 
   @Column({ length: 100, nullable: true })
-  @IsEmail()
   admin_email: string;
 
   @Column()
