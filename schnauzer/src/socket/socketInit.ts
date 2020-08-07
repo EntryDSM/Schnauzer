@@ -61,7 +61,7 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
         const storedChat = await Qna.createNewQna({
           user_receipt_code: receipt_code,
           content,
-          admin_email: "broadcast@broadcast.com",
+          admin_email: null,
           to: ADMIN,
         });
         io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
