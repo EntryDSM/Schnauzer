@@ -79,7 +79,7 @@ describe("basic socket.io example", function () {
         message.should.be.an.instanceOf(Object);
         message.should.deep.equal({
           qna_id: 15,
-          admin_email: "broadcast@broadcast.com",
+          admin_email: null,
           user_receipt_code: 30003,
           content: "안녕",
           to: "admin",

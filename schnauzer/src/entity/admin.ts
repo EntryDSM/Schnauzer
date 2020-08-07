@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn } from "typeorm";
 import { IsEmail, IsNotEmpty } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
 
