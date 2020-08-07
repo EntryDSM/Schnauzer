@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { IsNotEmpty, IsEmail } from "class-validator";
+import { IsNotEmpty } from "class-validator";
 import { ValidationEntity } from "./validationEntity";
 import { Like } from "typeorm";
 import { getConnection } from "typeorm";

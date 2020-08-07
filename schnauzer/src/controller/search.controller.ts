@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { getConnection } from "typeorm";
-import { dbOptions } from "../global/config";
-import { Admin } from "../entity/admin";
 import { Qna } from "../entity/qna";
 import { User } from "../entity/user";
 import hasNullOrUndefined from "../global/utils/paramsCheck";
