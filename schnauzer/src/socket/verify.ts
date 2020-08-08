@@ -1,7 +1,7 @@
 import { User } from "../entity/user";
 import { getConnection } from "typeorm";
 import { Admin } from "../entity/admin";
-import { UserType, STUDENT, ADMIN } from "../entity/qna";
+import { STUDENT, ADMIN } from "../entity/qna";
 import * as socketAuth from "socketio-jwt-auth";
 import {
   UnknownUserError,
