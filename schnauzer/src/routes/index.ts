@@ -11,7 +11,7 @@ router.get(
   "/chats/:receiptCode",
   jwtCheck,
   isAdmin,
-  ChatController.getChatsWithEmail
+  ChatController.getChatsWithCode
 );
 router.get("/last-chats", jwtCheck, isAdmin, ChatController.getLastChats);
 router.get("/search/:name", jwtCheck, isAdmin, SearchController.searchByName);

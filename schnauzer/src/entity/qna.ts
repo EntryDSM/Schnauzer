@@ -40,7 +40,7 @@ export class Qna extends ValidationEntity {
 
   static async findByUserCodeWithPage(
     receiptCode: number,
-    page: number,
+    offset: number,
     limit: number
   ) {
     return getConnection()
@@ -49,14 +49,14 @@ export class Qna extends ValidationEntity {
       .from(Qna, "qna")
       .where("qna.user_receipt_code = :receiptCode", { receiptCode })
       .orderBy("created_at", "DESC")
-      .offset(page * limit)
+      .offset(offset)
       .limit(limit)
       .getMany();
   }
 
   static async findByUserEmailWithPage(
     email: string,
-    page: number,
+    offset: number,
     limit: number
   ) {
     const { receipt_code } = await User.findByEmail(email);
@@ -66,12 +66,12 @@ export class Qna extends ValidationEntity {
       .from(Qna, "qna")
       .where("qna.user_receipt_code = :receipt_code", { receipt_code })
       .orderBy("created_at", "DESC")
-      .offset(page * limit)
+      .offset(offset)
       .limit(limit)
       .getMany();
   }
 
-  static findLastChatOfEachUser(page: number, limit: number) {
+  static findLastChatOfEachUser(offset: number, limit: number) {
     return getConnection()
       .createQueryBuilder()
       .select("qna")
@@ -86,14 +86,14 @@ export class Qna extends ValidationEntity {
         return "qna.qna_id IN " + subQuery;
       })
       .limit(limit)
-      .offset(page * limit)
+      .offset(offset)
       .orderBy("qna_id", "DESC")
       .getMany();
   }
 
   static async findLastChatOfEachUserByName(
     name: string,
-    page: number,
+    offset: number,
     limit: number
   ) {
     const searchResult = await getConnection()
@@ -121,7 +121,7 @@ export class Qna extends ValidationEntity {
         return "qna.qna_id IN " + subQuery;
       })
       .limit(limit)
-      .offset(limit * page)
+      .offset(offset)
       .orderBy("qna_id", "DESC")
       .getMany();
   }

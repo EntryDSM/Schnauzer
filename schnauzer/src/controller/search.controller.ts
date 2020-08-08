@@ -12,14 +12,14 @@ export class SearchController {
     next: NextFunction
   ) => {
     const { name } = req.params;
-    const { page } = req.query;
-    hasNullOrUndefined([name, page]) && next(InvalidParameterError);
+    const { offset } = req.query;
+    hasNullOrUndefined([name, offset]) && next(InvalidParameterError);
     try {
       const connection = getConnection();
       const userRepo = connection.getRepository(User);
       const searchResult = await Qna.findLastChatOfEachUserByName(
         name,
-        Number(page),
+        Number(offset),
         15
       );
       const lastChats = await Promise.all(
