@@ -144,7 +144,7 @@ export class Qna extends ValidationEntity {
     created_at?: Date;
   }) {
     qna.is_read = false;
-    qna.created_at = new Date(Date.now());
+    qna.created_at = new Date();
     const qnaRepo = getConnection().getRepository(Qna);
     return qnaRepo.save(qnaRepo.create(qna));
   }
