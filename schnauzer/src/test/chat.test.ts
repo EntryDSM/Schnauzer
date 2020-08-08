@@ -83,7 +83,7 @@ describe("GET /qna/chats", () => {
         .request(server.application)
         .get("/v5/qna/chats")
         .set({ Authorization: validToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -96,7 +96,7 @@ describe("GET /qna/chats", () => {
         .request(server.application)
         .get("/v5/qna/chats")
         .set({ Authorization: validToken })
-        .query({ page: 1 })
+        .query({ offset: 10 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -121,7 +121,7 @@ describe("GET /qna/chats", () => {
         .request(server.application)
         .get("/v5/qna/chats")
         .set({ Authorization: adminEmailToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(403);
           done();
@@ -137,7 +137,7 @@ describe("GET /qna/last-chats", () => {
         .request(server.application)
         .get("/v5/qna/last-chats")
         .set({ Authorization: adminEmailToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -152,7 +152,7 @@ describe("GET /qna/last-chats", () => {
         .request(server.application)
         .get("/v5/qna/last-chats")
         .set({ Authorization: validToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(403);
           done();
@@ -168,7 +168,7 @@ describe("GET /qna/chats/:receiptCode", () => {
         .request(server.application)
         .get("/v5/qna/chats/30001")
         .set({ Authorization: adminEmailToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -183,7 +183,7 @@ describe("GET /qna/chats/:receiptCode", () => {
         .request(server.application)
         .get("/v5/qna/chats/30001")
         .set({ Authorization: validToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(403);
           done();
@@ -199,7 +199,7 @@ describe("GET /qna/search/:name", () => {
         .request(server.application)
         .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: adminEmailToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -212,7 +212,7 @@ describe("GET /qna/search/:name", () => {
         .request(server.application)
         .get(`/v5/qna/search/${encodeURI("김예")}`)
         .set({ Authorization: adminEmailToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -225,7 +225,7 @@ describe("GET /qna/search/:name", () => {
         .request(server.application)
         .get(`/v5/qna/search/${encodeURI("노바디")}`)
         .set({ Authorization: adminEmailToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
@@ -240,7 +240,7 @@ describe("GET /qna/search/:name", () => {
         .request(server.application)
         .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: validToken })
-        .query({ page: 0 })
+        .query({ offset: 0 })
         .end((err, res) => {
           res.should.have.status(403);
           done();
