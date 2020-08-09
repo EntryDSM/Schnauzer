@@ -12,11 +12,9 @@ export class ChatController {
     hasNullOrUndefined([sub, offset]) && next(InvalidParameterError);
     const limit = 10;
     try {
-      const chats = await Qna.findByUserEmailWithPage(
-        sub,
-        Number(offset),
-        limit
-      );
+      const chats = (
+        await Qna.findByUserEmailWithPage(sub, Number(offset), limit)
+      ).reverse();
       res.status(200).json(chats);
     } catch (e) {
       next(e);
@@ -33,11 +31,13 @@ export class ChatController {
     const limit = 10;
     hasNullOrUndefined([receiptCode, offset]) && next(InvalidParameterError);
     try {
-      const chats = await Qna.findByUserCodeWithPage(
-        Number(receiptCode),
-        Number(offset),
-        limit
-      );
+      const chats = (
+        await Qna.findByUserCodeWithPage(
+          Number(receiptCode),
+          Number(offset),
+          limit
+        )
+      ).reverse();
       res.status(200).json(chats);
     } catch (e) {
       next(e);
