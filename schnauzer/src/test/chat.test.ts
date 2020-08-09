@@ -87,7 +87,7 @@ describe("GET /qna/chats", () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
-          res.body.should.deep.equal(getChatsExpectedResult);
+          res.body.should.deep.equal(getChatsExpectedResult.reverse());
           done();
         });
     });
@@ -162,7 +162,7 @@ describe("GET /qna/last-chats", () => {
 });
 
 describe("GET /qna/chats/:receiptCode", () => {
-  describe("succeess", () => {
+  describe("success", () => {
     it("should return expected object", (done) => {
       chai
         .request(server.application)
@@ -172,7 +172,7 @@ describe("GET /qna/chats/:receiptCode", () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a.instanceOf(Array);
-          res.body.should.deep.equal(getChatsWithEmailExpectedResult);
+          res.body.should.deep.equal(getChatsWithEmailExpectedResult.reverse());
           done();
         });
     });

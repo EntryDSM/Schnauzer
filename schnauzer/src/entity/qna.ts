@@ -48,7 +48,7 @@ export class Qna extends ValidationEntity {
       .select("qna")
       .from(Qna, "qna")
       .where("qna.user_receipt_code = :receiptCode", { receiptCode })
-      .orderBy("created_at", "DESC")
+      .orderBy("qna_id", "DESC")
       .offset(offset)
       .limit(limit)
       .getMany();
@@ -65,7 +65,7 @@ export class Qna extends ValidationEntity {
       .select("qna")
       .from(Qna, "qna")
       .where("qna.user_receipt_code = :receipt_code", { receipt_code })
-      .orderBy("created_at", "DESC")
+      .orderBy("qna_id", "DESC")
       .offset(offset)
       .limit(limit)
       .getMany();
