@@ -42,38 +42,23 @@ before((done) => {
   );
   createConnection().then((c) => {
     connection = c;
-    done();
+    const qnaRepo = connection.getRepository(Qna);
+    const userRepo = connection.getRepository(User);
+    const adminRepo = connection.getRepository(Admin);
+    let savePromises = [];
+    admins.forEach((admin) => {
+      savePromises.push(adminRepo.save(adminRepo.create(admin)));
+    });
+    users.forEach((user) => {
+      savePromises.push(userRepo.save(userRepo.create(user)));
+    });
+    chatExample.forEach((chat) => {
+      savePromises.push(qnaRepo.save(qnaRepo.create(chat)));
+    });
+    Promise.all(savePromises)
+      .then(() => done())
+      .catch((err) => console.log(err));
   });
-});
-
-beforeEach((done) => {
-  const qnaRepo = connection.getRepository(Qna);
-  const userRepo = connection.getRepository(User);
-  const adminRepo = connection.getRepository(Admin);
-  let savePromises = [];
-  admins.forEach((admin) => {
-    savePromises.push(adminRepo.save(adminRepo.create(admin)));
-  });
-  users.forEach((user) => {
-    savePromises.push(userRepo.save(userRepo.create(user)));
-  });
-  chatExample.forEach((chat) => {
-    savePromises.push(qnaRepo.save(qnaRepo.create(chat)));
-  });
-  Promise.all(savePromises)
-    .then(() => done())
-    .catch((err) => console.log(err));
-});
-
-after((done) => {
-  const qnaRepo: Repository<Qna> = connection.getRepository(Qna);
-  const userRepo: Repository<User> = connection.getRepository(User);
-  const adminRepo: Repository<Admin> = connection.getRepository(Admin);
-  qnaRepo
-    .clear()
-    .then(() =>
-      Promise.all([userRepo.clear(), adminRepo.clear()]).then(() => done())
-    );
 });
 
 describe("GET /qna/chats", () => {

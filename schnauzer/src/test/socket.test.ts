@@ -42,23 +42,19 @@ after((done) => {
       disconnectSocket(userSocket);
       disconnectSocket(adminSocket);
       disconnectSocket(otherAdminSocket);
-      done();
+      const qnaRepo: Repository<Qna> = connection.getRepository(Qna);
+      const userRepo: Repository<User> = connection.getRepository(User);
+      const adminRepo: Repository<Admin> = connection.getRepository(Admin);
+      qnaRepo
+        .clear()
+        .then(() =>
+          Promise.all([userRepo.clear(), adminRepo.clear()]).then(() => done())
+        );
     });
   });
 });
 
 describe("basic socket.io example", function () {
-  afterEach((done) => {
-    const qnaRepo: Repository<Qna> = connection.getRepository(Qna);
-    const userRepo: Repository<User> = connection.getRepository(User);
-    const adminRepo: Repository<Admin> = connection.getRepository(Admin);
-    qnaRepo
-      .clear()
-      .then(() =>
-        Promise.all([userRepo.clear(), adminRepo.clear()]).then(() => done())
-      );
-  });
-
   describe("user", () => {
     before((done) => {
       userSocket = connectSocketClient(userToken, httpServerAddr);
@@ -114,7 +110,7 @@ describe("basic socket.io example", function () {
         adminSocket.on(Event.RECEIVE_MESSAGE, (message) => {
           delete message.created_at;
           message.should.deep.equal({
-            qna_id: 15,
+            qna_id: 16,
             admin_email: "admin1@example.com",
             user_receipt_code: 30003,
             content: "Hello",
