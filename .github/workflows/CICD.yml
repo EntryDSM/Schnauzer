@@ -18,39 +18,39 @@ jobs:
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      strategy:
-        matrix:
-          node-version: [12.16.3]
+    strategy:
+      matrix:
+        node-version: [12.16.3]
 
-      steps:
-        - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-        - name: NodeJS Installation ${{ matrix.node-version }}
-          uses: actions/setup-node@v1
-          with:
-            node-version: ${{ matrix.node-version }}
+      - name: NodeJS Installation ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-        - name: Dependencies Installation
-          run: npm ci
-          working-directory: ./schnauzer
+      - name: Dependencies Installation
+        run: npm ci
+        working-directory: ./schnauzer
 
-        - name: build
-          run: npm run build
-          working-directory: ./schnauzer
+      - name: build
+        run: npm run build
+        working-directory: ./schnauzer
 
-        - name: install codecov
-          run: npm i -g codecov
+      - name: install codecov
+        run: npm i -g codecov
 
-        - name: test
-          run: npm run cover
-          working-directory: ./schnauzer
+      - name: test
+        run: npm run cover
+        working-directory: ./schnauzer
 
-        - name: report
-          run: npm run report
-          working-directory: ./schnauzer
+      - name: report
+        run: npm run report
+        working-directory: ./schnauzer
 
-        - name: codecov
-          run: codecov
+      - name: codecov
+        run: codecov
   CD:
     runs-on: ubuntu-latest
     needs: CI
