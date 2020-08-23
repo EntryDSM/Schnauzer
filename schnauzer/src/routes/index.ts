@@ -1,19 +1,13 @@
 import { Router } from "express";
 import { ChatController } from "../controller/chat.controller";
-import jwtCheck from "../middleware/jwtCheck";
 import { SearchController } from "../controller/search.controller";
 import { isAdmin, isUser } from "../middleware/userCheck";
 
 const router = Router();
 
-router.get("/chats", jwtCheck, isUser, ChatController.getChats);
-router.get(
-  "/chats/:receiptCode",
-  jwtCheck,
-  isAdmin,
-  ChatController.getChatsWithCode
-);
-router.get("/last-chats", jwtCheck, isAdmin, ChatController.getLastChats);
-router.get("/search/:name", jwtCheck, isAdmin, SearchController.searchByName);
+router.get("/chats", isUser, ChatController.getChats);
+router.get("/chats/:receiptCode", isAdmin, ChatController.getChatsWithCode);
+router.get("/last-chats", isAdmin, ChatController.getLastChats);
+router.get("/search/:name", isAdmin, SearchController.searchByName);
 
 export default router;
