@@ -5,7 +5,7 @@ import * as chai from "chai";
 import Socket = SocketIOClient.Socket;
 import { Server } from "http";
 import { Socket as ServerSocket, Server as IoServer } from "socket.io";
-import { jwtSecret } from "../global/config";
+import { adminJwtSecret, mainJwtSecret } from "../global/config";
 import { sign } from "jsonwebtoken";
 import socketInit from "../socket/index";
 import { Event } from "../socket/entity/events";
@@ -13,6 +13,7 @@ import { Connection, getConnection, Repository } from "typeorm";
 import { Qna } from "../entity/qna";
 import { User } from "../entity/user";
 import { Admin } from "../entity/admin";
+import * as jwt from "jsonwebtoken";
 
 chai.should();
 
@@ -25,9 +26,17 @@ let connection: Connection;
 
 before((done) => {
   connection = getConnection();
-  userToken = generateToken("user3@example.com");
-  adminToken = generateToken("admin1@example.com");
-  otherAdminToken = generateToken("admin2@example.com");
+  userToken = generateToken("access_token", mainJwtSecret, "user3@example.com");
+  adminToken = generateToken(
+    "access_token",
+    adminJwtSecret,
+    "admin1@example.com"
+  );
+  otherAdminToken = generateToken(
+    "access_token",
+    adminJwtSecret,
+    "admin2@example.com"
+  );
 
   httpServer = http.createServer().listen();
   httpServerAddr = httpServer.address();
@@ -58,7 +67,9 @@ describe("basic socket.io example", function () {
   describe("user", () => {
     before((done) => {
       userSocket = connectSocketClient(userToken, httpServerAddr);
-      done();
+      userSocket.on("authenticated", () => done());
+      userSocket.on("unauthorized", (err) => console.log(err));
+      userSocket.emit("authentication", { token: userToken, type: "student" });
     });
 
     after((done) => {
@@ -87,11 +98,30 @@ describe("basic socket.io example", function () {
   });
   describe("admin", () => {
     beforeEach((done) => {
+      let admin = false,
+        user = false,
+        otherAdmin = false;
       adminSocket = connectSocketClient(adminToken, httpServerAddr);
+      adminSocket.emit("authentication", { token: adminToken, type: "admin" });
       userSocket = connectSocketClient(userToken, httpServerAddr);
+      userSocket.emit("authentication", { token: userToken, type: "student" });
       otherAdminSocket = connectSocketClient(otherAdminToken, httpServerAddr);
-
-      done();
+      otherAdminSocket.emit("authentication", {
+        token: otherAdminToken,
+        type: "admin",
+      });
+      userSocket.on("authenticated", () => {
+        user = true;
+        if (admin && user && otherAdmin) done();
+      });
+      adminSocket.on("authenticated", () => {
+        admin = true;
+        if (admin && user && otherAdmin) done();
+      });
+      otherAdminSocket.on("authenticated", () => {
+        otherAdmin = true;
+        if (admin && user && otherAdmin) done();
+      });
     });
 
     afterEach((done) => {
@@ -138,20 +168,26 @@ describe("basic socket.io example", function () {
       });
       it("should return auth error", (done) => {
         const newSocket = connectSocketClient("fjweof", httpServerAddr);
-        newSocket.on("error", (err) => {
+        newSocket.emit("authentication", { token: "fjweof", type: "admin" });
+        newSocket.on("unauthorized", (err) => {
+          console.log(err);
           newSocket.disconnect();
           done();
         });
       });
       it("should return error with refresh token", (done) => {
-        const newSocket = connectSocketClient(
-          sign({ type: "refresh_token" }, jwtSecret, {
-            expiresIn: "3m",
-            subject: "user3@example.com",
-          }),
-          httpServerAddr
+        const refreshToken = generateToken(
+          "refresh_token",
+          mainJwtSecret,
+          "user3@example.com"
         );
-        newSocket.on("error", (err) => {
+        const newSocket = connectSocketClient(refreshToken, httpServerAddr);
+        newSocket.emit("authentication", {
+          token: refreshToken,
+          type: "student",
+        });
+        newSocket.on("unauthorized", (err) => {
+          console.log(err);
           newSocket.disconnect();
           done();
         });
@@ -170,7 +206,6 @@ function connectSocketClient(
       reconnectionDelay: 0,
       forceNew: true,
       transports: ["websocket"],
-      query: `auth_token=${token}`,
     }
   );
 }
@@ -181,9 +216,6 @@ function disconnectSocket(socket: Socket) {
   }
 }
 
-function generateToken(email: string) {
-  return sign({ type: "access_token" }, jwtSecret, {
-    expiresIn: "3m",
-    subject: email,
-  });
+function generateToken(type: string, secret: string, subject: string) {
+  return jwt.sign({ type, email: subject }, secret, { expiresIn: "3m" });
 }

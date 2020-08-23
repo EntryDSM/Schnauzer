@@ -16,7 +16,7 @@ import { users } from "./data/user";
 import { admins } from "./data/admin";
 import server from "../app";
 import { Qna } from "../entity/qna";
-import { jwtSecret } from "../global/config";
+import { adminJwtSecret, mainJwtSecret } from "../global/config";
 import { User } from "../entity/user";
 import { Admin } from "../entity/admin";
 
@@ -25,11 +25,17 @@ chai.use(chaiHttp);
 let connection: Connection, validToken, invalidSecretToken, adminEmailToken;
 
 function generateToken(type: string, secret: string, subject: string) {
-  return "Bearer " + jwt.sign({ type }, secret, { subject, expiresIn: "3m" });
+  return (
+    "Bearer " + jwt.sign({ type, email: subject }, secret, { expiresIn: "3m" })
+  );
 }
 
 before((done) => {
-  validToken = generateToken("access_token", jwtSecret, "user3@example.com");
+  validToken = generateToken(
+    "access_token",
+    mainJwtSecret,
+    "user3@example.com"
+  );
   invalidSecretToken = generateToken(
     "access_token",
     "invalid secret",
@@ -37,7 +43,7 @@ before((done) => {
   );
   adminEmailToken = generateToken(
     "access_token",
-    jwtSecret,
+    adminJwtSecret,
     "admin1@example.com"
   );
   createConnection().then((c) => {
@@ -101,14 +107,14 @@ describe("GET /qna/chats", () => {
           done();
         });
     });
-    it("should have status 403 with amdin email token", (done) => {
+    it("should have status 401 with admin email token", (done) => {
       chai
         .request(server.application)
         .get("/v5/qna/chats")
         .set({ Authorization: adminEmailToken })
         .query({ offset: 0 })
         .end((err, res) => {
-          res.should.have.status(403);
+          res.should.have.status(401);
           done();
         });
     });
@@ -132,14 +138,14 @@ describe("GET /qna/last-chats", () => {
     });
   });
   describe("fail", () => {
-    it("should have status 403 with user token", (done) => {
+    it("should have status 401 with user token", (done) => {
       chai
         .request(server.application)
         .get("/v5/qna/last-chats")
         .set({ Authorization: validToken })
         .query({ offset: 0 })
         .end((err, res) => {
-          res.should.have.status(403);
+          res.should.have.status(401);
           done();
         });
     });
@@ -163,14 +169,14 @@ describe("GET /qna/chats/:receiptCode", () => {
     });
   });
   describe("fail", () => {
-    it("should have status 403 with user token", (done) => {
+    it("should have status 401 with user token", (done) => {
       chai
         .request(server.application)
         .get("/v5/qna/chats/30001")
         .set({ Authorization: validToken })
         .query({ offset: 0 })
         .end((err, res) => {
-          res.should.have.status(403);
+          res.should.have.status(401);
           done();
         });
     });
@@ -220,14 +226,14 @@ describe("GET /qna/search/:name", () => {
     });
   });
   describe("fail", () => {
-    it("should have status 403 with user token", (done) => {
+    it("should have status 401 with user token", (done) => {
       chai
         .request(server.application)
         .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: validToken })
         .query({ offset: 0 })
         .end((err, res) => {
-          res.should.have.status(403);
+          res.should.have.status(401);
           done();
         });
     });

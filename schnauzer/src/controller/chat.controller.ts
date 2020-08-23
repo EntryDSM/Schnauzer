@@ -8,13 +8,13 @@ import logger from "../global/utils/logger";
 
 export class ChatController {
   static getChats = async (req: Request, res: Response, next: NextFunction) => {
-    const { sub } = res.locals.jwtPayload;
+    const { email } = res.locals.jwtPayload;
     const { offset } = req.query;
-    hasNullOrUndefined([sub, offset]) && next(InvalidParameterError);
+    hasNullOrUndefined([email, offset]) && next(InvalidParameterError);
     const limit = 10;
     try {
       const chats = (
-        await Qna.findByUserEmailWithPage(sub, Number(offset), limit)
+        await Qna.findByUserEmailWithPage(email, Number(offset), limit)
       ).reverse();
       logger.info(`${req.method} ${req.url} 200`);
       res.status(200).json(chats);

@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Qna, UserType, ADMIN, STUDENT } from "../entity/qna";
+import { ADMIN, Qna, STUDENT, UserType } from "../entity/qna";
 import { Sockets } from "./entity/sockets";
 import { Event } from "./entity/events";
 import { DatabaseUpdateError } from "../global/error/errorCode";
@@ -28,7 +28,18 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
             admin_email: socket.request.user.email,
             to: STUDENT,
           });
-          io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
+          let check = false;
+          for (const room in socket.rooms) {
+            if (room === userEmail) {
+              check = true;
+              break;
+            }
+          }
+          if (check) {
+            io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
+          } else {
+            sockets.emitAllAdmin(Event.RECEIVE_MESSAGE, storedChat);
+          }
         } catch (e) {
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
@@ -41,7 +52,18 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
         try {
           const { receipt_code } = await User.findByEmail(userEmail);
           await Qna.updateIsReadByReceiptCode(receipt_code);
-          io.to(userEmail).emit(Event.RECEIVE_READ_CHECK, userEmail);
+          let check = false;
+          for (const room in socket.rooms) {
+            if (room === userEmail) {
+              check = true;
+              break;
+            }
+          }
+          if (check) {
+            io.to(userEmail).emit(Event.RECEIVE_READ_CHECK, userEmail);
+          } else {
+            sockets.emitAllAdmin(Event.RECEIVE_READ_CHECK, userEmail);
+          }
         } catch (e) {
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }

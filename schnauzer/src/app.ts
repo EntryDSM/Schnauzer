@@ -47,6 +47,7 @@ class App {
   public listen(port: number) {
     this.createServer(port);
     this.socket();
+    console.log(`Server listening on ${port}`);
   }
 
   get application() {
