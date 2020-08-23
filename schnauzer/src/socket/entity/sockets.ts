@@ -1,8 +1,15 @@
 import { Socket } from "socket.io";
+import { Event } from "./events";
 
 export class Sockets {
   private userSockets: Socket[] = [];
   private adminSockets: Socket[] = [];
+
+  public emitAllAdmin(event: Event, data): void {
+    this.adminSockets.forEach((adminSocket) => {
+      adminSocket.emit(event, data);
+    });
+  }
 
   public addAdmin(adminSocket: Socket): void {
     if (this.isNotExistAdmin(adminSocket)) {

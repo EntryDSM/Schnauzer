@@ -36,12 +36,13 @@
     "mysql": "^2.14.1",
     "reflect-metadata": "^0.1.10",
     "socket.io": "^2.3.0",
+    "socketio-auth": "^0.1.1",
     "socketio-jwt-auth": "^0.1.0",
     "typeorm": "0.2.25",
     "winston": "^3.3.3"
   },
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha --exit -r ts-node/register src/test/**/*.test.ts",
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 --exit -r ts-node/register src/test/**/*.test.ts",
     "dev": "cross-env NODE_ENV=test nodemon --exec ts-node src/index.ts",
     "start": "npm run build && npm run execute",
     "build": "tsc",
@@ -51,6 +52,5 @@
   },
   "prettier": {
     "tabWidth": 2
-  },
-  "type": "module"
+  }
 }

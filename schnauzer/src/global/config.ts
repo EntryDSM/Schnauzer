@@ -9,7 +9,8 @@ const {
   DB_PASSWORD,
   DB_NAME,
   SERVER_PORT,
-  JWT_SECRET,
+  MAIN_JWT_SECRET,
+  ADMIN_JWT_SECRET,
 } = process.env;
 
 export const dbOptions = {
@@ -21,4 +22,5 @@ export const dbOptions = {
 };
 
 export const serverPort = Number(SERVER_PORT);
-export const jwtSecret = JWT_SECRET;
+export const adminJwtSecret = ADMIN_JWT_SECRET;
+export const mainJwtSecret = MAIN_JWT_SECRET;
