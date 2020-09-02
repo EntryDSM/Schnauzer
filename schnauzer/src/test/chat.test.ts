@@ -2,7 +2,7 @@
 import * as chaiHttp from "chai-http";
 import * as chai from "chai";
 import * as jwt from "jsonwebtoken";
-import { Connection, createConnection, Repository } from "typeorm";
+import { Connection, createConnection } from "typeorm";
 import {
   chatExample,
   getChatsExpectedResult,
@@ -24,25 +24,32 @@ chai.should();
 chai.use(chaiHttp);
 let connection: Connection, validToken, invalidSecretToken, adminEmailToken;
 
-function generateToken(type: string, secret: string, subject: string) {
+function generateUserToken(type: string, secret: string, subject: string) {
   return (
     "Bearer " + jwt.sign({ type, email: subject }, secret, { expiresIn: "3m" })
   );
 }
 
+function generateAdminToken(type: string, secret: string, subject: string) {
+  return (
+    "Bearer " +
+    jwt.sign({ type, identity: subject }, secret, { expiresIn: "3m" })
+  );
+}
+
 before((done) => {
-  validToken = generateToken(
+  validToken = generateUserToken(
     "access_token",
     mainJwtSecret,
     "user3@example.com"
   );
-  invalidSecretToken = generateToken(
+  invalidSecretToken = generateUserToken(
     "access_token",
     "invalid secret",
     "user3@example.com"
   );
-  adminEmailToken = generateToken(
-    "access_token",
+  adminEmailToken = generateAdminToken(
+    "access",
     adminJwtSecret,
     "admin1@example.com"
   );
@@ -51,17 +58,18 @@ before((done) => {
     const qnaRepo = connection.getRepository(Qna);
     const userRepo = connection.getRepository(User);
     const adminRepo = connection.getRepository(Admin);
-    let savePromises = [];
-    admins.forEach((admin) => {
-      savePromises.push(adminRepo.save(adminRepo.create(admin)));
-    });
-    users.forEach((user) => {
-      savePromises.push(userRepo.save(userRepo.create(user)));
-    });
-    chatExample.forEach((chat) => {
-      savePromises.push(qnaRepo.save(qnaRepo.create(chat)));
-    });
-    Promise.all(savePromises)
+    const adminPromises = admins.map((admin) =>
+      adminRepo.save(adminRepo.create(admin))
+    );
+    const userPromises = users.map((user) =>
+      userRepo.save(userRepo.create(user))
+    );
+    const chatPromises = chatExample.map((chat) =>
+      qnaRepo.save(qnaRepo.create(chat))
+    );
+    Promise.all(adminPromises)
+      .then(() => Promise.all(userPromises))
+      .then(() => Promise.all(chatPromises))
       .then(() => done())
       .catch((err) => console.log(err));
   });

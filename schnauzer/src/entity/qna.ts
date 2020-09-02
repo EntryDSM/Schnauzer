@@ -14,9 +14,6 @@ export class Qna extends ValidationEntity {
   @PrimaryGeneratedColumn()
   qna_id: number;
 
-  @Column({ length: 100, nullable: true })
-  admin_email: string;
-
   @Column()
   @IsNotEmpty()
   user_receipt_code: number;
@@ -137,7 +134,6 @@ export class Qna extends ValidationEntity {
 
   static async createNewQna(qna: {
     user_receipt_code: number;
-    admin_email: string;
     content: string;
     to: UserType;
     is_read?: boolean;

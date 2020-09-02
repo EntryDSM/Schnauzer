@@ -21,11 +21,11 @@ export default (io: Server) => {
         let user;
         if (type === "admin") {
           const payload: any = jwt.verify(token, adminJwtSecret);
-          if (payload.type !== "access_token") {
+          if (payload.type !== "access") {
             return callback(ExpiredOrInvalidTokenError);
           }
           const adminRepo = connection.getRepository(Admin);
-          user = await adminRepo.findOne({ email: payload.email });
+          user = await adminRepo.findOne({ email: payload.identity });
         } else if (type === "student") {
           const payload: any = jwt.verify(token, mainJwtSecret);
           if (payload.type !== "access_token") {

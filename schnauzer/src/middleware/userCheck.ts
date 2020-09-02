@@ -51,12 +51,12 @@ export const isAdmin = async (
       req.get("Authorization").substring(7),
       adminJwtSecret
     );
-    if (payload.type !== "access_token") {
+    if (payload.type !== "access") {
       throw ExpiredOrInvalidTokenError;
     }
     const connection = getConnection();
     const adminRepo = connection.getRepository(Admin);
-    if (!(await adminRepo.findOne({ email: payload.email }))) {
+    if (!(await adminRepo.findOne({ email: payload.identity }))) {
       throw UnknownUserError;
     }
     next();
