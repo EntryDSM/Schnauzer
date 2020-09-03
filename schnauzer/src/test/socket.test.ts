@@ -26,14 +26,18 @@ let connection: Connection;
 
 before((done) => {
   connection = getConnection();
-  userToken = generateToken("access_token", mainJwtSecret, "user3@example.com");
-  adminToken = generateToken(
+  userToken = generateUserToken(
     "access_token",
+    mainJwtSecret,
+    "user3@example.com"
+  );
+  adminToken = generateAdminToken(
+    "access",
     adminJwtSecret,
     "admin1@example.com"
   );
-  otherAdminToken = generateToken(
-    "access_token",
+  otherAdminToken = generateAdminToken(
+    "access",
     adminJwtSecret,
     "admin2@example.com"
   );
@@ -58,7 +62,8 @@ after((done) => {
         .clear()
         .then(() =>
           Promise.all([userRepo.clear(), adminRepo.clear()]).then(() => done())
-        );
+        )
+        .catch((err) => console.log(err));
     });
   });
 });
@@ -86,7 +91,6 @@ describe("basic socket.io example", function () {
         message.should.be.an.instanceOf(Object);
         message.should.deep.equal({
           qna_id: 15,
-          admin_email: null,
           user_receipt_code: 30003,
           content: "안녕",
           to: "admin",
@@ -141,7 +145,6 @@ describe("basic socket.io example", function () {
           delete message.created_at;
           message.should.deep.equal({
             qna_id: 16,
-            admin_email: "admin1@example.com",
             user_receipt_code: 30003,
             content: "Hello",
             to: "student",
@@ -170,13 +173,12 @@ describe("basic socket.io example", function () {
         const newSocket = connectSocketClient("fjweof", httpServerAddr);
         newSocket.emit("authentication", { token: "fjweof", type: "admin" });
         newSocket.on("unauthorized", (err) => {
-          console.log(err);
           newSocket.disconnect();
           done();
         });
       });
       it("should return error with refresh token", (done) => {
-        const refreshToken = generateToken(
+        const refreshToken = generateUserToken(
           "refresh_token",
           mainJwtSecret,
           "user3@example.com"
@@ -187,7 +189,6 @@ describe("basic socket.io example", function () {
           type: "student",
         });
         newSocket.on("unauthorized", (err) => {
-          console.log(err);
           newSocket.disconnect();
           done();
         });
@@ -216,6 +217,10 @@ function disconnectSocket(socket: Socket) {
   }
 }
 
-function generateToken(type: string, secret: string, subject: string) {
+function generateUserToken(type: string, secret: string, subject: string) {
   return jwt.sign({ type, email: subject }, secret, { expiresIn: "3m" });
+}
+
+function generateAdminToken(type: string, secret: string, subject: string) {
+  return jwt.sign({ type, identity: subject }, secret, { expiresIn: "3m" });
 }

@@ -8,6 +8,7 @@ import {
 import { Admin } from "../entity/admin";
 import { JsonWebTokenError, TokenExpiredError, verify } from "jsonwebtoken";
 import { adminJwtSecret, mainJwtSecret } from "../global/config";
+import hasNullOrUndefined from "../global/utils/paramsCheck";
 
 export const isUser = async (
   req: Request,
@@ -15,6 +16,9 @@ export const isUser = async (
   next: NextFunction
 ) => {
   try {
+    if (hasNullOrUndefined([req.get("Authorization")])) {
+      throw ExpiredOrInvalidTokenError;
+    }
     const payload: any = verify(
       req.get("Authorization").substring(7),
       mainJwtSecret
@@ -47,12 +51,12 @@ export const isAdmin = async (
       req.get("Authorization").substring(7),
       adminJwtSecret
     );
-    if (payload.type !== "access_token") {
+    if (payload.type !== "access") {
       throw ExpiredOrInvalidTokenError;
     }
     const connection = getConnection();
     const adminRepo = connection.getRepository(Admin);
-    if (!(await adminRepo.findOne({ email: payload.email }))) {
+    if (!(await adminRepo.findOne({ email: payload.identity }))) {
       throw UnknownUserError;
     }
     next();
