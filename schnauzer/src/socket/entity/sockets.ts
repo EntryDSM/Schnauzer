@@ -1,5 +1,6 @@
 import { Socket } from "socket.io";
 import { Event } from "./events";
+import { User } from "../../entity/user";
 
 export class Sockets {
   private userSockets: Socket[] = [];
@@ -20,9 +21,12 @@ export class Sockets {
     }
   }
 
-  public addUser(userSocket: Socket): void {
+  public async addUser(userSocket: Socket): Promise<void> {
     if (this.isNotExistUser(userSocket)) {
-      userSocket.join(userSocket.request.user.email);
+      const receiptCode = userSocket.request.user.sub;
+      const { email } = await User.findByCode(receiptCode);
+      userSocket.join(email);
+      userSocket.request.user.email = email;
       this.userSockets.push(userSocket);
       this.adminSockets.forEach((adminSocket) =>
         adminSocket.join(userSocket.request.user.email)

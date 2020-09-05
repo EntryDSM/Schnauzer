@@ -19,20 +19,25 @@ export default (io: Server) => {
       try {
         const connection = getConnection();
         let user;
+
         if (type === "admin") {
           const payload: any = jwt.verify(token, adminJwtSecret);
+
           if (payload.type !== "access") {
             return callback(ExpiredOrInvalidTokenError);
           }
+
           const adminRepo = connection.getRepository(Admin);
           user = await adminRepo.findOne({ email: payload.identity });
         } else if (type === "student") {
           const payload: any = jwt.verify(token, mainJwtSecret);
+
           if (payload.type !== "access_token") {
             return callback(ExpiredOrInvalidTokenError);
           }
+
           const userRepo = connection.getRepository(User);
-          user = await userRepo.findOne({ email: payload.email });
+          user = await userRepo.findOne({ receipt_code: payload.sub });
         } else {
           return callback(UnknownUserError);
         }
@@ -47,7 +52,7 @@ export default (io: Server) => {
         callback(e);
       }
     },
-    postAuthenticate: (socket, data) => {
+    postAuthenticate: async (socket, data) => {
       const { token, type } = data;
       try {
         let payload;
@@ -60,7 +65,7 @@ export default (io: Server) => {
           socket.request.user = payload;
           socket.request.user.userType = "student";
         }
-        socketInit(socket, socket.request.user.userType, io);
+        await socketInit(socket, socket.request.user.userType, io);
       } catch (e) {
         socket.emit("unauthorized", ExpiredOrInvalidTokenError);
       }

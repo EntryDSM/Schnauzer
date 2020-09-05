@@ -73,4 +73,8 @@ export class User extends ValidationEntity {
   static findByEmail(email: string) {
     return getConnection().getRepository(User).findOne({ email });
   }
+
+  static findByCode(code: number) {
+    return getConnection().getRepository(User).findOne({ receipt_code: code });
+  }
 }

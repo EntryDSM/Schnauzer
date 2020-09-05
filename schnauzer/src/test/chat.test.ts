@@ -24,9 +24,10 @@ chai.should();
 chai.use(chaiHttp);
 let connection: Connection, validToken, invalidSecretToken, adminEmailToken;
 
-function generateUserToken(type: string, secret: string, subject: string) {
+function generateUserToken(type: string, secret: string, subject: number) {
   return (
-    "Bearer " + jwt.sign({ type, email: subject }, secret, { expiresIn: "3m" })
+    "Bearer " +
+    jwt.sign({ type }, secret, { subject: String(subject), expiresIn: "3m" })
   );
 }
 
@@ -38,15 +39,11 @@ function generateAdminToken(type: string, secret: string, subject: string) {
 }
 
 before((done) => {
-  validToken = generateUserToken(
-    "access_token",
-    mainJwtSecret,
-    "user3@example.com"
-  );
+  validToken = generateUserToken("access_token", mainJwtSecret, 30003);
   invalidSecretToken = generateUserToken(
     "access_token",
     "invalid secret",
-    "user3@example.com"
+    30003
   );
   adminEmailToken = generateAdminToken(
     "access",
