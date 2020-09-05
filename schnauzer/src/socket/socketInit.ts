@@ -7,7 +7,11 @@ import { User } from "../entity/user";
 
 const sockets = new Sockets();
 
-export const socketInit = (socket: Socket, type: UserType, io: Server) => {
+export const socketInit = async (
+  socket: Socket,
+  type: UserType,
+  io: Server
+) => {
   if (type === ADMIN) {
     sockets.addAdmin(socket);
 
@@ -15,7 +19,7 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
       Event.NEW_MESSAGE,
       async ({
         content,
-        userEmail,
+        userEmail, // receiptCode로 바뀔 수도 있다.
       }: {
         content: string;
         userEmail: string;
@@ -48,6 +52,7 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
     socket.on(
       Event.READ_CHECK,
       async ({ userEmail }: { userEmail: string }) => {
+        // receiptCode로 바뀔 수도 있다.
         try {
           const { receipt_code } = await User.findByEmail(userEmail);
           await Qna.updateIsReadByReceiptCode(receipt_code);
@@ -73,18 +78,17 @@ export const socketInit = (socket: Socket, type: UserType, io: Server) => {
       sockets.adminLeaveRooms(socket);
     });
   } else if (type === STUDENT) {
-    sockets.addUser(socket);
+    await sockets.addUser(socket);
 
     socket.on(Event.NEW_MESSAGE, async ({ content }: { content: string }) => {
       try {
-        const userEmail = socket.request.user.email;
-        const { receipt_code } = await User.findByEmail(userEmail);
+        const { sub, email } = socket.request.user;
         const storedChat = await Qna.createNewQna({
-          user_receipt_code: receipt_code,
+          user_receipt_code: sub,
           content,
           to: ADMIN,
         });
-        io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
+        io.to(email).emit(Event.RECEIVE_MESSAGE, storedChat);
       } catch (e) {
         socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
       }

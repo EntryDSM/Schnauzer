@@ -28,7 +28,7 @@ export const isUser = async (
     }
     const connection = getConnection();
     const userRepo = connection.getRepository(User);
-    if (!(await userRepo.findOne({ email: payload.email }))) {
+    if (!(await userRepo.findOne({ receipt_code: payload.sub }))) {
       throw UnknownUserError;
     }
     res.locals.jwtPayload = payload;

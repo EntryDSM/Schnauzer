@@ -26,11 +26,7 @@ let connection: Connection;
 
 before((done) => {
   connection = getConnection();
-  userToken = generateUserToken(
-    "access_token",
-    mainJwtSecret,
-    "user3@example.com"
-  );
+  userToken = generateUserToken("access_token", mainJwtSecret, 30003);
   adminToken = generateAdminToken(
     "access",
     adminJwtSecret,
@@ -72,7 +68,9 @@ describe("basic socket.io example", function () {
   describe("user", () => {
     before((done) => {
       userSocket = connectSocketClient(userToken, httpServerAddr);
-      userSocket.on("authenticated", () => done());
+      userSocket.on("authenticated", () => {
+        setTimeout(() => done(), 1000);
+      });
       userSocket.on("unauthorized", (err) => console.log(err));
       userSocket.emit("authentication", { token: userToken, type: "student" });
     });
@@ -83,20 +81,20 @@ describe("basic socket.io example", function () {
     });
 
     it("should communicate", (done) => {
-      userSocket.emit(Event.NEW_MESSAGE, {
-        content: "안녕",
-      });
       userSocket.on(Event.RECEIVE_MESSAGE, (message) => {
         delete message.created_at;
         message.should.be.an.instanceOf(Object);
         message.should.deep.equal({
           qna_id: 15,
-          user_receipt_code: 30003,
+          user_receipt_code: "30003",
           content: "안녕",
           to: "admin",
           is_read: false,
         });
         done();
+      });
+      userSocket.emit(Event.NEW_MESSAGE, {
+        content: "안녕",
       });
     });
   });
@@ -116,15 +114,21 @@ describe("basic socket.io example", function () {
       });
       userSocket.on("authenticated", () => {
         user = true;
-        if (admin && user && otherAdmin) done();
+        if (admin && user && otherAdmin) {
+          setTimeout(() => done(), 1000);
+        }
       });
       adminSocket.on("authenticated", () => {
         admin = true;
-        if (admin && user && otherAdmin) done();
+        if (admin && user && otherAdmin) {
+          setTimeout(() => done(), 1000);
+        }
       });
       otherAdminSocket.on("authenticated", () => {
         otherAdmin = true;
-        if (admin && user && otherAdmin) done();
+        if (admin && user && otherAdmin) {
+          setTimeout(() => done(), 1000);
+        }
       });
     });
 
@@ -181,7 +185,7 @@ describe("basic socket.io example", function () {
         const refreshToken = generateUserToken(
           "refresh_token",
           mainJwtSecret,
-          "user3@example.com"
+          30003
         );
         const newSocket = connectSocketClient(refreshToken, httpServerAddr);
         newSocket.emit("authentication", {
@@ -217,8 +221,11 @@ function disconnectSocket(socket: Socket) {
   }
 }
 
-function generateUserToken(type: string, secret: string, subject: string) {
-  return jwt.sign({ type, email: subject }, secret, { expiresIn: "3m" });
+function generateUserToken(type: string, secret: string, subject: number) {
+  return jwt.sign({ type, email: subject }, secret, {
+    expiresIn: "3m",
+    subject: String(subject),
+  });
 }
 
 function generateAdminToken(type: string, secret: string, subject: string) {
