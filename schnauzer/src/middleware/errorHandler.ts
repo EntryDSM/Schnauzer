@@ -9,9 +9,9 @@ export const errorHandler: ErrorRequestHandler = (
   next
 ) => {
   if (!err.status) {
-    logger.emerg(`${req.method} ${req.url} 500`);
+    logger.emerg(`${req.method} ${req.url} 500 ${err.message}`);
   } else {
-    logger.error(`${req.method} ${req.url} ${err.status}`);
+    logger.error(`${req.method} ${req.url} ${err.status} ${err.message}`);
   }
   res.status(err.status || 500).json({
     message: err.message || "internal server error",

@@ -16,13 +16,12 @@ export const isUser = async (
   next: NextFunction
 ) => {
   try {
-    if (hasNullOrUndefined([req.get("Authorization")])) {
+    let token = req.get("Authorization");
+    if (hasNullOrUndefined([token])) {
       throw ExpiredOrInvalidTokenError;
     }
-    const payload: any = verify(
-      req.get("Authorization").substring(7),
-      mainJwtSecret
-    );
+    const secret = Buffer.from(mainJwtSecret, "base64");
+    const payload: any = verify(token.substring(7), secret.toString());
     if (payload.type !== "access_token") {
       throw ExpiredOrInvalidTokenError;
     }
@@ -47,13 +46,11 @@ export const isAdmin = async (
   next: NextFunction
 ) => {
   try {
-    if (hasNullOrUndefined([req.get("Authorization")])) {
+    const token = req.get("Authorization");
+    if (hasNullOrUndefined([token])) {
       throw ExpiredOrInvalidTokenError;
     }
-    const payload: any = verify(
-      req.get("Authorization").substring(7),
-      adminJwtSecret
-    );
+    const payload: any = verify(token.substring(7), adminJwtSecret);
     if (payload.type !== "access") {
       throw ExpiredOrInvalidTokenError;
     }
