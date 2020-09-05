@@ -47,6 +47,9 @@ export const isAdmin = async (
   next: NextFunction
 ) => {
   try {
+    if (hasNullOrUndefined([req.get("Authorization")])) {
+      throw ExpiredOrInvalidTokenError;
+    }
     const payload: any = verify(
       req.get("Authorization").substring(7),
       adminJwtSecret
