@@ -73,34 +73,7 @@ before((done) => {
 });
 
 describe("GET /qna/chats", () => {
-  describe("success", () => {
-    it("should return expected object", (done) => {
-      chai
-        .request(server.application)
-        .get("/v5/qna/chats")
-        .set({ Authorization: validToken })
-        .query({ offset: 0 })
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a.instanceOf(Array);
-          res.body.should.deep.equal(getChatsExpectedResult.reverse());
-          done();
-        });
-    });
-    it("should return length-1 array", (done) => {
-      chai
-        .request(server.application)
-        .get("/v5/qna/chats")
-        .set({ Authorization: validToken })
-        .query({ offset: 10 })
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a.instanceOf(Array);
-          res.body.should.deep.equal(getChatsExpectedResult2);
-          done();
-        });
-    });
-  });
+  describe("success", () => {});
   describe("fail", () => {
     it("should have status 401 with invalid token", (done) => {
       chai
