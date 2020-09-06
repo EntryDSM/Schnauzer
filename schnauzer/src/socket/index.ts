@@ -30,7 +30,8 @@ export default (io: Server) => {
           const adminRepo = connection.getRepository(Admin);
           user = await adminRepo.findOne({ email: payload.identity });
         } else if (type === "student") {
-          const payload: any = jwt.verify(token, mainJwtSecret);
+          const secret = Buffer.from(mainJwtSecret, "base64");
+          const payload: any = jwt.verify(token, secret.toString());
 
           if (payload.type !== "access_token") {
             return callback(ExpiredOrInvalidTokenError);
@@ -61,7 +62,8 @@ export default (io: Server) => {
           socket.request.user = payload;
           socket.request.user.userType = "admin";
         } else if (type === "student") {
-          payload = jwt.verify(token, mainJwtSecret);
+          const secret = Buffer.from(mainJwtSecret, "base64");
+          payload = jwt.verify(token, secret.toString());
           socket.request.user = payload;
           socket.request.user.userType = "student";
         }
