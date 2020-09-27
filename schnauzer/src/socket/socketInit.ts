@@ -19,7 +19,7 @@ export const socketInit = async (
       Event.NEW_MESSAGE,
       async ({
         content,
-        userEmail, // receiptCode로 바뀔 수도 있다.
+        userEmail,
       }: {
         content: string;
         userEmail: string;
@@ -52,7 +52,6 @@ export const socketInit = async (
     socket.on(
       Event.READ_CHECK,
       async ({ userEmail }: { userEmail: string }) => {
-        // receiptCode로 바뀔 수도 있다.
         try {
           const { receipt_code } = await User.findByEmail(userEmail);
           await Qna.updateIsReadByReceiptCode(receipt_code);

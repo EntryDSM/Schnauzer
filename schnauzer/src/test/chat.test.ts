@@ -50,26 +50,28 @@ before((done) => {
     adminJwtSecret,
     "admin1@example.com"
   );
-  createConnection().then((c) => {
-    connection = c;
-    const qnaRepo = connection.getRepository(Qna);
-    const userRepo = connection.getRepository(User);
-    const adminRepo = connection.getRepository(Admin);
-    const adminPromises = admins.map((admin) =>
-      adminRepo.save(adminRepo.create(admin))
-    );
-    const userPromises = users.map((user) =>
-      userRepo.save(userRepo.create(user))
-    );
-    const chatPromises = chatExample.map((chat) =>
-      qnaRepo.save(qnaRepo.create(chat))
-    );
-    Promise.all(adminPromises)
-      .then(() => Promise.all(userPromises))
-      .then(() => Promise.all(chatPromises))
-      .then(() => done())
-      .catch((err) => console.log(err));
-  });
+  createConnection()
+    .then((c) => {
+      connection = c;
+      const qnaRepo = connection.getRepository(Qna);
+      const userRepo = connection.getRepository(User);
+      const adminRepo = connection.getRepository(Admin);
+      const adminPromises = admins.map((admin) =>
+        adminRepo.save(adminRepo.create(admin))
+      );
+      const userPromises = users.map((user) =>
+        userRepo.save(userRepo.create(user))
+      );
+      const chatPromises = chatExample.map((chat) =>
+        qnaRepo.save(qnaRepo.create(chat))
+      );
+      Promise.all(adminPromises)
+        .then(() => Promise.all(userPromises))
+        .then(() => Promise.all(chatPromises))
+        .then(() => done())
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.error(err));
 });
 
 describe("GET /qna/chats", () => {
@@ -77,7 +79,7 @@ describe("GET /qna/chats", () => {
   describe("fail", () => {
     it("should have status 401 with invalid token", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get("/v5/qna/chats")
         .set({ Authorization: invalidSecretToken })
         .end((err, res) => {
@@ -87,7 +89,7 @@ describe("GET /qna/chats", () => {
     });
     it("should have status 401 with admin email token", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get("/v5/qna/chats")
         .set({ Authorization: adminEmailToken })
         .query({ offset: 0 })
@@ -103,7 +105,7 @@ describe("GET /qna/last-chats", () => {
   describe("success", () => {
     it("should return expected object", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get("/v5/qna/last-chats")
         .set({ Authorization: adminEmailToken })
         .query({ offset: 0 })
@@ -118,7 +120,7 @@ describe("GET /qna/last-chats", () => {
   describe("fail", () => {
     it("should have status 401 with user token", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get("/v5/qna/last-chats")
         .set({ Authorization: validToken })
         .query({ offset: 0 })
@@ -134,7 +136,7 @@ describe("GET /qna/chats/:receiptCode", () => {
   describe("success", () => {
     it("should return expected object", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get("/v5/qna/chats/30001")
         .set({ Authorization: adminEmailToken })
         .query({ offset: 0 })
@@ -149,7 +151,7 @@ describe("GET /qna/chats/:receiptCode", () => {
   describe("fail", () => {
     it("should have status 401 with user token", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get("/v5/qna/chats/30001")
         .set({ Authorization: validToken })
         .query({ offset: 0 })
@@ -165,7 +167,7 @@ describe("GET /qna/search/:name", () => {
   describe("success", () => {
     it("should return expected object", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: adminEmailToken })
         .query({ offset: 0 })
@@ -178,7 +180,7 @@ describe("GET /qna/search/:name", () => {
     });
     it("should return expected object", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get(`/v5/qna/search/${encodeURI("김예")}`)
         .set({ Authorization: adminEmailToken })
         .query({ offset: 0 })
@@ -191,7 +193,7 @@ describe("GET /qna/search/:name", () => {
     });
     it("should return empty array", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get(`/v5/qna/search/${encodeURI("노바디")}`)
         .set({ Authorization: adminEmailToken })
         .query({ offset: 0 })
@@ -206,7 +208,7 @@ describe("GET /qna/search/:name", () => {
   describe("fail", () => {
     it("should have status 401 with user token", (done) => {
       chai
-        .request(server.application)
+        .request(server._application)
         .get(`/v5/qna/search/${encodeURI("예시")}`)
         .set({ Authorization: validToken })
         .query({ offset: 0 })

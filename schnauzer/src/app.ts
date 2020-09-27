@@ -44,13 +44,13 @@ class App {
     socketInit(this.io);
   }
 
-  public listen(port: number) {
+  public listen(port: number, callback: () => void) {
     this.createServer(port);
     this.socket();
-    console.log(`Server listening on ${port}`);
+    callback();
   }
 
-  get application() {
+  get _application() {
     return this.app;
   }
 }
