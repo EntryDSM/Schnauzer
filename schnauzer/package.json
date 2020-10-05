@@ -32,6 +32,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.0",
     "morgan": "^1.10.0",
     "mysql": "^2.14.1",
     "reflect-metadata": "^0.1.10",
@@ -39,7 +40,8 @@
     "socketio-auth": "^0.1.1",
     "socketio-jwt-auth": "^0.1.0",
     "typeorm": "0.2.25",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0"
   },
   "scripts": {
     "test": "cross-env NODE_ENV=test mocha --timeout 10000 --exit -r ts-node/register src/test/**/*.test.ts",

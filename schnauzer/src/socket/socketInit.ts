@@ -4,6 +4,7 @@ import { Sockets } from "./entity/sockets";
 import { Event } from "./entity/events";
 import { DatabaseUpdateError } from "../global/error/errorCode";
 import { User } from "../entity/user";
+import logger from "../global/utils/logger";
 
 const sockets = new Sockets();
 
@@ -44,6 +45,7 @@ export const socketInit = async (
             sockets.emitAllAdmin(Event.RECEIVE_MESSAGE, storedChat);
           }
         } catch (e) {
+          logger.error(`SOCKET ${e.message}`);
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
       }
@@ -68,6 +70,7 @@ export const socketInit = async (
             sockets.emitAllAdmin(Event.RECEIVE_READ_CHECK, userEmail);
           }
         } catch (e) {
+          logger.error(`SOCKET ${e.message}`);
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
       }
@@ -89,6 +92,7 @@ export const socketInit = async (
         });
         io.to(email).emit(Event.RECEIVE_MESSAGE, storedChat);
       } catch (e) {
+        logger.error(`SOCKET ${e.message}`);
         socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
       }
     });
