@@ -7,6 +7,7 @@ import {
   UnknownUserError,
   ExpiredOrInvalidTokenError,
 } from "../global/error/errorCode";
+import logger from "../global/utils/logger";
 
 export const verifyFunc: socketAuth.verifyFunc = async (payload, done) => {
   try {
@@ -30,6 +31,7 @@ export const verifyFunc: socketAuth.verifyFunc = async (payload, done) => {
     }
     return done(null, info);
   } catch (e) {
+    logger.error(`SOCKET ${e.message}`);
     return done(e);
   }
 };

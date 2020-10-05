@@ -4,6 +4,7 @@ import { Sockets } from "./entity/sockets";
 import { Event } from "./entity/events";
 import { DatabaseUpdateError } from "../global/error/errorCode";
 import { User } from "../entity/user";
+import logger from "../global/utils/logger";
 
 const sockets = new Sockets();
 
@@ -19,7 +20,7 @@ export const socketInit = async (
       Event.NEW_MESSAGE,
       async ({
         content,
-        userEmail, // receiptCode로 바뀔 수도 있다.
+        userEmail,
       }: {
         content: string;
         userEmail: string;
@@ -44,6 +45,7 @@ export const socketInit = async (
             sockets.emitAllAdmin(Event.RECEIVE_MESSAGE, storedChat);
           }
         } catch (e) {
+          logger.error(`SOCKET ${e.message}`);
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
       }
@@ -52,7 +54,6 @@ export const socketInit = async (
     socket.on(
       Event.READ_CHECK,
       async ({ userEmail }: { userEmail: string }) => {
-        // receiptCode로 바뀔 수도 있다.
         try {
           const { receipt_code } = await User.findByEmail(userEmail);
           await Qna.updateIsReadByReceiptCode(receipt_code);
@@ -69,6 +70,7 @@ export const socketInit = async (
             sockets.emitAllAdmin(Event.RECEIVE_READ_CHECK, userEmail);
           }
         } catch (e) {
+          logger.error(`SOCKET ${e.message}`);
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
       }
@@ -90,6 +92,7 @@ export const socketInit = async (
         });
         io.to(email).emit(Event.RECEIVE_MESSAGE, storedChat);
       } catch (e) {
+        logger.error(`SOCKET ${e.message}`);
         socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
       }
     });

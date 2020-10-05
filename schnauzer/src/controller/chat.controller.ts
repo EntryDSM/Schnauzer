@@ -16,7 +16,7 @@ export class ChatController {
       const chats = (
         await Qna.findByUserCodeWithPage(sub, Number(offset), limit)
       ).reverse();
-      logger.info(`${req.method} ${req.url} 200`);
+      logger.info(`HTTP ${req.method} ${req.url} 200`);
       res.status(200).json(chats);
     } catch (e) {
       next(e);
@@ -40,7 +40,7 @@ export class ChatController {
           limit
         )
       ).reverse();
-      logger.info(`${req.method} ${req.url} 200`);
+      logger.info(`HTTP ${req.method} ${req.url} 200`);
       res.status(200).json(chats);
     } catch (e) {
       next(e);
@@ -69,7 +69,7 @@ export class ChatController {
           };
         })
       );
-      logger.info(`${req.method} ${req.url} 200`);
+      logger.info(`HTTP ${req.method} ${req.url} 200`);
       res.status(200).json(lastChats);
     } catch (e) {
       next(e);
