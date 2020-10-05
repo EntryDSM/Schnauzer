@@ -7,3 +7,4 @@ temp/
 .env
 coverage/
 .nyc_output/
+logs/
