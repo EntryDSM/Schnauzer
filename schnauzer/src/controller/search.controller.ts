@@ -34,7 +34,7 @@ export class SearchController {
           };
         })
       );
-      logger.info(`${req.method} ${req.url} 200`);
+      logger.info(`HTTP ${req.method} ${req.url} 200 success`);
       res.status(200).json(lastChats);
     } catch (e) {
       next(e);

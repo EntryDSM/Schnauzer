@@ -39,13 +39,14 @@ export const socketInit = async (
               break;
             }
           }
+          logger.info(`SOCKET admin_new_message SUCCESS`);
           if (check) {
             io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
           } else {
             sockets.emitAllAdmin(Event.RECEIVE_MESSAGE, storedChat);
           }
         } catch (e) {
-          logger.error(`SOCKET ${e.message}`);
+          logger.error(`SOCKET admin_new_message FAIL ${e.message}`);
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
       }
@@ -64,13 +65,14 @@ export const socketInit = async (
               break;
             }
           }
+          logger.info(`SOCKET read_check SUCCESS`);
           if (check) {
             io.to(userEmail).emit(Event.RECEIVE_READ_CHECK, userEmail);
           } else {
             sockets.emitAllAdmin(Event.RECEIVE_READ_CHECK, userEmail);
           }
         } catch (e) {
-          logger.error(`SOCKET ${e.message}`);
+          logger.error(`SOCKET read_check FAIL ${e.message}`);
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
       }
@@ -90,9 +92,10 @@ export const socketInit = async (
           content,
           to: ADMIN,
         });
+        logger.info(`SOCKET student_new_message SUCCESS`);
         io.to(email).emit(Event.RECEIVE_MESSAGE, storedChat);
       } catch (e) {
-        logger.error(`SOCKET ${e.message}`);
+        logger.error(`SOCKET student_new_message FAIL ${e.message}`);
         socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
       }
     });

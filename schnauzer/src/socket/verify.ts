@@ -31,7 +31,7 @@ export const verifyFunc: socketAuth.verifyFunc = async (payload, done) => {
     }
     return done(null, info);
   } catch (e) {
-    logger.error(`SOCKET ${e.message}`);
+    logger.error(`SOCKET authentication FAIL ${e.message}`);
     return done(e);
   }
 };
