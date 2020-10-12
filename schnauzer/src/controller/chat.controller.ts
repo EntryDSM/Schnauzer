@@ -4,7 +4,7 @@ import { Qna } from "../entity/qna";
 import { User } from "../entity/user";
 import { InvalidParameterError } from "../global/error/errorCode";
 import hasNullOrUndefined from "../global/utils/paramsCheck";
-import logger from "../global/utils/logger";
+import { httpLogger } from "../global/utils/logger";
 
 export class ChatController {
   static getChats = async (req: Request, res: Response, next: NextFunction) => {
@@ -16,9 +16,10 @@ export class ChatController {
       const chats = (
         await Qna.findByUserCodeWithPage(sub, Number(offset), limit)
       ).reverse();
-      logger.info(`HTTP ${req.method} ${req.url} 200 success`);
+      httpLogger.info(req, 200, "success");
       res.status(200).json(chats);
     } catch (e) {
+      res.locals.params = req.query;
       next(e);
     }
   };
@@ -40,9 +41,10 @@ export class ChatController {
           limit
         )
       ).reverse();
-      logger.info(`HTTP ${req.method} ${req.url} 200 success`);
+      httpLogger.info(req, 200, "success");
       res.status(200).json(chats);
     } catch (e) {
+      res.locals.params = { ...req.query, ...req.params };
       next(e);
     }
   };
@@ -69,9 +71,10 @@ export class ChatController {
           };
         })
       );
-      logger.info(`HTTP ${req.method} ${req.url} 200 success`);
+      httpLogger.info(req, 200, "success");
       res.status(200).json(lastChats);
     } catch (e) {
+      res.locals.params = req.query;
       next(e);
     }
   };

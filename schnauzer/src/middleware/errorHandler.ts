@@ -1,6 +1,6 @@
 import { ErrorRequestHandler } from "express";
 import { ErrorResponse } from "../global/error/error";
-import logger from "../global/utils/logger";
+import { httpLogger } from "../global/utils/logger";
 
 export const errorHandler: ErrorRequestHandler = (
   err: ErrorResponse,
@@ -9,9 +9,9 @@ export const errorHandler: ErrorRequestHandler = (
   next
 ) => {
   if (!err.status) {
-    logger.error(`HTTP ${req.method} ${req.url} 500 ${err.message}`);
+    httpLogger.error(req, err);
   } else {
-    logger.info(`HTTP ${req.method} ${req.url} ${err.status} ${err.message}`);
+    httpLogger.info(req, err.status, err.message);
   }
   res.status(err.status || 500).json({
     message: err.message || "internal server error",
