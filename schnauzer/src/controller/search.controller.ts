@@ -4,7 +4,7 @@ import { Qna } from "../entity/qna";
 import { User } from "../entity/user";
 import hasNullOrUndefined from "../global/utils/paramsCheck";
 import { InvalidParameterError } from "../global/error/errorCode";
-import logger from "../global/utils/logger";
+import { httpLogger } from "../global/utils/logger";
 
 export class SearchController {
   static searchByName = async (
@@ -34,9 +34,10 @@ export class SearchController {
           };
         })
       );
-      logger.info(`HTTP ${req.method} ${req.url} 200 success`);
+      httpLogger.info(req, 200, "success");
       res.status(200).json(lastChats);
     } catch (e) {
+      res.locals.params = { ...req.query, ...req.params };
       next(e);
     }
   };

@@ -4,7 +4,7 @@ import { Sockets } from "./entity/sockets";
 import { Event } from "./entity/events";
 import { DatabaseUpdateError } from "../global/error/errorCode";
 import { User } from "../entity/user";
-import logger from "../global/utils/logger";
+import { socketLogger } from "../global/utils/logger";
 
 const sockets = new Sockets();
 
@@ -39,14 +39,22 @@ export const socketInit = async (
               break;
             }
           }
-          logger.info(`SOCKET admin_new_message SUCCESS`);
+          socketLogger.info(
+            "admin_new_message",
+            "success",
+            JSON.stringify({ content, userEmail })
+          );
           if (check) {
             io.to(userEmail).emit(Event.RECEIVE_MESSAGE, storedChat);
           } else {
             sockets.emitAllAdmin(Event.RECEIVE_MESSAGE, storedChat);
           }
         } catch (e) {
-          logger.error(`SOCKET admin_new_message FAIL ${e.message}`);
+          socketLogger.error(
+            "admin_new_message",
+            e.message,
+            JSON.stringify({ content, userEmail })
+          );
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
       }
@@ -65,14 +73,22 @@ export const socketInit = async (
               break;
             }
           }
-          logger.info(`SOCKET read_check SUCCESS`);
+          socketLogger.info(
+            "read_check",
+            "success",
+            JSON.stringify({ userEmail })
+          );
           if (check) {
             io.to(userEmail).emit(Event.RECEIVE_READ_CHECK, userEmail);
           } else {
             sockets.emitAllAdmin(Event.RECEIVE_READ_CHECK, userEmail);
           }
         } catch (e) {
-          logger.error(`SOCKET read_check FAIL ${e.message}`);
+          socketLogger.error(
+            "read_check",
+            e.message,
+            JSON.stringify({ userEmail })
+          );
           socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
         }
       }
@@ -92,10 +108,19 @@ export const socketInit = async (
           content,
           to: ADMIN,
         });
-        logger.info(`SOCKET student_new_message SUCCESS`);
+        socketLogger.info(
+          "student_new_message",
+          "success",
+          JSON.stringify({ content, email, receiptCode: sub })
+        );
         io.to(email).emit(Event.RECEIVE_MESSAGE, storedChat);
       } catch (e) {
-        logger.error(`SOCKET student_new_message FAIL ${e.message}`);
+        const { sub, email } = socket.request.user;
+        socketLogger.error(
+          "student_new_message",
+          e.message,
+          JSON.stringify({ content, email, receiptCode: sub })
+        );
         socket.emit(Event.SAVE_ERROR, DatabaseUpdateError);
       }
     });
